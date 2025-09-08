@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEFENCE UPDATE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --background-start: #0A192F;
+            --background-mid: #171E2D;
+            --background-end: #212A3D;
+            --accent-1: #D4AF37; /* Gold */
+            --accent-2: #008080; /* Deep Teal */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-start);
+            color: #E2E8F0; /* Lighter text for dark background */
+        }
+        
+        /* A subtle iPhone-style gradient effect for the entire body */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--background-start), var(--background-mid), var(--background-end));
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+            z-index: -1;
+            opacity: 0.9;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Gradient text for titles */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 100%;
+            animation: text-gradient-animation 5s ease infinite;
+        }
+
+        @keyframes text-gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.08); /* Less transparent */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15); /* Softer border */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-effect-dark {
+            background: rgba(0, 0, 0, 0.3); /* Slightly less opaque */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .infographic-card, .exam-card, .ppdt-set-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .infographic-card:hover, .exam-card:hover, .ppdt-set-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .infographic-container::-webkit-scrollbar, .scrollable-content::-webkit-scrollbar { height: 6px; width: 6px; }
+        .infographic-container::-webkit-scrollbar-track, .scrollable-content::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .infographic-container::-webkit-scrollbar-thumb, .scrollable-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 10px; }
+        .infographic-container::-webkit-scrollbar-thumb:hover, .scrollable-content::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+        
+        .modal-content {
+            animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slide-up {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .result-score {
+            animation: score-pop 0.6s ease-out forwards;
+        }
+
+        @keyframes score-pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        #ppdt-story-textarea, #ppdt-details-textarea, #ssb-answer-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        #ppdt-story-textarea:focus, #ppdt-details-textarea:focus, #ssb-answer-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+        
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #ffffff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .timer-circle { 
+            transition: stroke-dashoffset 1s linear; 
+        }
+
+    </style>
+</head>
+<body class="text-gray-300 font-sans leading-relaxed transition-colors duration-300">
+
+    <div id="app-container" class="relative z-10 min-h-screen flex flex-col">
+        <header id="main-header" class="sticky top-4 z-50 container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-effect rounded-2xl px-6 py-3 flex justify-between items-center">
+                <h1 class="text-2xl font-bold tracking-tighter text-white gradient-text">DEFENCE UPDATE</h1>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#infographics" class="text-gray-400 hover:text-white transition-colors">News</a>
+                    <a href="#exams" class="text-gray-400 hover:text-white transition-colors">Exams</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">About</a>
+                </nav>
+                <button class="bg-white/10 text-white px-4 py-2 rounded-full font-semibold text-sm hover:bg-white/20 transition-transform hover:scale-105">
+                    Subscribe
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Section 1: Infographics -->
+            <section id="infographics" class="mb-12 md:mb-16">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h2 class="text-4xl font-extrabold tracking-tight text-white gradient-text">Latest Briefings</h2>
+                        <p class="mt-2 text-gray-400">Key defence updates at a glance.</p>
+                    </div>
+                    <div class="relative mt-4 md:mt-0 w-full md:w-auto">
+                        <input type="text" id="news-search" placeholder="Search news..." class="w-full md:w-64 pl-4 pr-10 py-2.5 glass-effect rounded-full text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                <div id="infographic-container" class="infographic-container flex gap-6 overflow-x-auto pb-6 -mx-4 px-4 snap-x snap-mandatory md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible">
+                    <!-- News cards injected here -->
+                </div>
+            </section>
+
+            <!-- Section 2: Exams -->
+            <section id="exams" class="mb-12 md:mb-16">
+                 <h2 class="text-4xl font-extrabold tracking-tight text-white gradient-text">Exam Preparation</h2>
+                 <p class="mb-6 text-gray-400">Practice tests and resources to ace your exams.</p>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                     <!-- PYQ Paper Card -->
+                     <div id="pyq-card" class="exam-card glass-effect rounded-2xl p-6 flex flex-col items-start">
+                         <div class="bg-blue-600/20 text-blue-400 rounded-full p-2.5 mb-4"><svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
+                         <h3 class="text-xl font-bold text-white">PYQ Archive</h3>
+                         <p class="text-gray-400 mt-2 mb-4 flex-grow">Access previous year question papers for NDA & CDS.</p>
+                         <button id="explore-pyq-btn" class="mt-auto bg-white/10 text-white font-bold py-2 px-5 rounded-full hover:bg-white/20 transition-transform hover:scale-105">Explore Papers</button>
+                     </div>
+
+                     <!-- SSB Practice Card -->
+                     <div class="exam-card glass-effect rounded-2xl p-6 flex flex-col items-start">
+                        <div class="bg-green-600/20 text-green-400 rounded-full p-2.5 mb-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.5 21.75l-.398-1.178a3.375 3.375 0 00-2.455-2.456L12.5 18l1.178-.398a3.375 3.375 0 002.455-2.456L16.5 14.25l.398 1.178a3.375 3.375 0 002.456 2.456L20.25 18l-1.178.398a3.375 3.375 0 00-2.456 2.456z" /></svg></div>
+                        <h3 class="text-xl font-bold text-white">Premium SSB Practice</h3>
+                        <p class="text-gray-400 mt-2 mb-4 flex-grow">Structured exercises for PPDT, with more tests coming soon.</p>
+                        <button id="ssb-practice-btn" class="mt-auto bg-white/10 text-white font-bold py-2 px-5 rounded-full hover:bg-white/20 transition-transform hover:scale-105">Start Drills</button>
+                     </div>
+
+                     <!-- Mock Tests Card -->
+                     <div class="exam-card glass-effect rounded-2xl p-6 flex flex-col items-start">
+                         <div class="bg-purple-600/20 text-purple-400 rounded-full p-2.5 mb-4"><svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg></div>
+                         <h3 class="text-xl font-bold text-white">Mock Tests</h3>
+                         <p class="text-gray-400 mt-2 mb-4 flex-grow">Interactive MCQs for CDS with instant results.</p>
+                         <button id="start-quiz-btn" class="mt-auto bg-white/10 text-white font-bold py-2 px-5 rounded-full hover:bg-white/20 transition-transform hover:scale-105">Select Test</button>
+                     </div>
+                 </div>
+            </section>
+        </main>
+        
+        <footer class="w-full mt-auto glass-effect text-gray-300 p-6 text-center">
+            <div class="container mx-auto">
+                <p class="font-bold text-lg mb-2">DEFENCE UPDATE</p>
+                <p class="text-sm text-gray-400 mb-4">Your daily source for defence news and exam preparation.</p>
+                <div class="flex justify-center space-x-4 mb-4"><a href="#" class="text-gray-400 hover:text-white">Twitter</a><a href="#" class="text-gray-400 hover:text-white">YouTube</a><a href="#" class="text-gray-400 hover:text-white">Telegram</a></div>
+                <p class="text-xs text-gray-500">&copy; 2025 DEFENCE UPDATE. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals Container -->
+    <div id="modal-container">
+        <!-- Afghanistan Earthquake Modal -->
+        <div id="afghanistan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-3xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg p-6 md:p-8 overflow-y-auto scrollable-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold">Afghanistan Earthquake Crisis</h2>
+                    <button id="close-afghanistan-modal" class="text-white/70 hover:text-white text-3xl">&times;</button>
+                </div>
+                <div class="text-center mb-8">
+                    <p class="text-lg text-gray-300">Herat province devastated by powerful earthquakes and aftershocks.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center mb-8">
+                    <div class="bg-red-500/20 p-4 rounded-xl"><h4 class="font-bold text-3xl text-red-300">2,200+</h4><p class="text-sm text-gray-400">Estimated Deaths</p></div>
+                    <div class="bg-yellow-500/20 p-4 rounded-xl"><h4 class="font-bold text-3xl text-yellow-300">6.3</h4><p class="text-sm text-gray-400">Initial Magnitude</p></div>
+                    <div class="bg-yellow-500/20 p-4 rounded-xl col-span-2 md:col-span-1"><h4 class="font-bold text-3xl text-yellow-300">2</h4><p class="text-sm text-gray-400">Powerful Aftershocks</p></div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-2">Impact Overview</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 bg-white/5 p-4 rounded-xl">
+                        <li>The initial quake was followed by strong aftershocks, causing widespread panic.</li>
+                        <li>Herat city and surrounding districts are the worst affected areas.</li>
+                        <li>Many villages have been completely flattened, with thousands left homeless.</li>
+                        <li>Rescue operations are underway, but the death toll is expected to rise.</li>
+                    </ul>
+                </div>
+                <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                    <a href="https://www.thehindu.com/news/international/two-powerful-aftershocks-hit-afghanistan-after-earthquakes-killed-2200/article70014965.ece" target="_blank" rel="noopener noreferrer" class="bg-white/10 text-white font-bold py-3 px-8 rounded-full hover:bg-white/20 transition-all duration-300 inline-block">
+                        Read Full Article
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- P75 Project Modal -->
+        <div id="p75-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-3xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg p-6 md:p-8 overflow-y-auto scrollable-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold">P75 Submarine Programme Update</h2>
+                    <button id="close-p75-modal" class="text-white/70 hover:text-white text-3xl">&times;</button>
+                </div>
+                <div class="text-center mb-8">
+                    <p class="text-lg text-gray-300">CFF Fluid Control secures a major contract from Mazagon Dock Shipbuilders Ltd.</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+                    <div class="bg-white/5 p-4 rounded-xl flex-1"><h4 class="font-bold text-lg">Mazagon Dock (MDL)</h4><p class="text-sm text-gray-400">Prime Shipbuilder</p></div>
+                    <svg class="w-12 h-12 text-blue-400 transform md:-rotate-0 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    <div class="border-2 border-dashed border-blue-400 p-4 rounded-xl flex-1"><h4 class="font-bold text-2xl text-blue-300">₹24.16 Cr</h4><p class="text-sm text-gray-400">Contract for Towed Wire Antenna</p></div>
+                    <svg class="w-12 h-12 text-blue-400 transform md:-rotate-0 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    <div class="bg-white/5 p-4 rounded-xl flex-1"><h4 class="font-bold text-lg">CFF Fluid Control</h4><p class="text-sm text-gray-400">Equipment Supplier</p></div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-white/10 text-center"><h4 class="font-bold text-lg mb-2">Project Timeline</h4><p class="bg-green-500/20 text-green-300 font-semibold py-2 px-4 rounded-full inline-block">Supply to be completed over the next 2 years</p></div>
+                <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                    <a href="https://www.business-standard.com/markets/capital-market-news/cff-fluid-control-gains-on-bagging-rs-24-cr-order-for-indian-navy-s-p75-project-125090400461_1.html" target="_blank" rel="noopener noreferrer" class="bg-white/10 text-white font-bold py-3 px-8 rounded-full hover:bg-white/20 transition-all duration-300 inline-block">
+                        Read Full Article
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trade Infographic Modal -->
+        <div id="trade-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-4xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg p-6 md:p-8 overflow-y-auto scrollable-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold">India's Trade with Russia & China</h2>
+                    <button id="close-trade-modal" class="text-white/70 hover:text-white text-3xl">&times;</button>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4 text-center">Trade Volume (2023-24)</h3>
+                        <div class="bg-white/5 p-4 rounded-xl h-80">
+                            <canvas id="tradeBarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 flex items-center"><span class="text-lg mr-2">🇷🇺</span> India-Russia Trade</h4>
+                            <div class="bg-white/5 p-4 rounded-xl text-sm">
+                                <p class="font-semibold mb-2">Key Exports to Russia:</p>
+                                <ul class="list-disc list-inside text-gray-300 space-y-1"><li>Organic chemicals, pharmaceuticals, electronics</li></ul>
+                                <p class="font-semibold mt-3 mb-2">Key Imports from Russia:</p>
+                                <ul class="list-disc list-inside text-gray-300 space-y-1"><li>Crude oil, coal, fertilisers, diamonds</li></ul>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 flex items-center"><span class="text-lg mr-2">🇨🇳</span> India-China Trade</h4>
+                            <div class="bg-white/5 p-4 rounded-xl text-sm">
+                                <p class="font-semibold mb-2">Key Exports to China:</p>
+                                <ul class="list-disc list-inside text-gray-300 space-y-1"><li>Iron ore, cotton, organic chemicals</li></ul>
+                                <p class="font-semibold mt-3 mb-2">Key Imports from China:</p>
+                                <ul class="list-disc list-inside text-gray-300 space-y-1"><li>Electronics, machinery, organic chemicals</li></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                    <a href="https://www.aljazeera.com/news/2025/9/3/how-much-do-india-russia-china-trade-and-what-goods-do-they-buy" target="_blank" rel="noopener noreferrer" class="bg-white/10 text-white font-bold py-3 px-8 rounded-full hover:bg-white/20 transition-all duration-300 inline-block">
+                        Read Full Article
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- GST Infographic Modal -->
+        <div id="gst-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-4xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg p-6 md:p-8 overflow-y-auto"><div class="flex justify-between items-center mb-6"><h2 class="text-2xl md:text-3xl font-bold">India's GST Reforms</h2><button id="close-gst-modal" class="text-white/70 hover:text-white text-3xl">&times;</button></div><div class="mt-4 p-4 md:p-6 bg-yellow-500/20 text-yellow-200 rounded-lg shadow-inner border-l-4 border-yellow-400"><p class="font-semibold text-sm md:text-base">Disclaimer: This is a hypothetical representation and not official data.</p></div><div class="flex justify-center my-8 bg-black/20 rounded-full p-1 flex-wrap"><button class="gst-tab-button flex-1 px-4 py-2 text-sm font-medium text-gray-300 text-center rounded-full active" data-tab="1">Tax Structure</button><button class="gst-tab-button flex-1 px-4 py-2 text-sm font-medium text-gray-300 text-center rounded-full" data-tab="2">Key Items</button><button class="gst-tab-button flex-1 px-4 py-2 text-sm font-medium text-gray-300 text-center rounded-full" data-tab="3">Infographics</button></div><div id="gst-content1" class="gst-tab-content"><div class="grid md:grid-cols-2 gap-6"><div class="p-6 rounded-xl bg-white/5"><p class="font-bold text-lg mb-2">Two Main Slabs</p><ul class="list-disc list-inside space-y-2"><li><span class="font-bold">5%:</span> Essentials</li><li><span class="font-bold">18%:</span> Most goods/services</li></ul></div><div class="p-6 rounded-xl bg-white/5"><p class="font-bold text-lg mb-2">New 40% Slab</p><p>For luxury items.</p></div></div></div><div id="gst-content2" class="gst-tab-content hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4"><div class="p-4 rounded-lg bg-green-500/20"><h3 class="font-bold text-green-300 mb-2">Tax-Free (0%)</h3><ul class="list-disc list-inside space-y-1 text-sm"><li>Life-saving Drugs</li><li>Insurance</li></ul></div><div class="p-4 rounded-lg bg-blue-500/20"><h3 class="font-bold text-blue-300 mb-2">5% GST</h3><ul class="list-disc list-inside space-y-1 text-sm"><li>Daily Essentials, Mobiles, etc.</li></ul></div><div class="p-4 rounded-lg bg-gray-500/20"><h3 class="font-bold text-gray-300 mb-2">18% GST</h3><ul class="list-disc list-inside space-y-1 text-sm"><li>Dishwashers, cement, etc.</li></ul></div><div class="p-4 rounded-lg bg-red-500/20"><h3 class="font-bold text-red-300 mb-2">40% GST</h3><ul class="list-disc list-inside space-y-1 text-sm"><li>High-end cars, tobacco, etc.</li></ul></div></div></div><div id="gst-content3" class="gst-tab-content hidden"><div class="grid md:grid-cols-2 gap-8"><div class="bg-white/5 p-4 rounded-xl"><h3 class="text-lg font-semibold mb-2 text-center">GST Slab Distribution</h3><div class="h-64"><canvas id="pieChart"></canvas></div></div><div class="bg-white/5 p-4 rounded-xl"><h3 class="text-lg font-semibold mb-2 text-center">Pre- & Post-Reform Rates</h3><div class="h-64"><canvas id="barChart"></canvas></div></div></div></div><div class="mt-8 pt-6 border-t border-white/10 text-center"><a href="https://indianexpress.com/article/business/gst-council-approves-two-tier-tax-implemented-september-22-10228654/" target="_blank" rel="noopener noreferrer" class="bg-white/10 text-white font-bold py-3 px-8 rounded-full hover:bg-white/20 transition-all duration-300 inline-block">Read Full Article</a></div></div></div>
+        <!-- PYQ Modal -->
+        <div id="pyq-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-3xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col"><div class="p-6 border-b border-white/10 flex justify-between items-center"><h3 class="text-2xl font-bold">Previous Year Papers</h3><button id="close-pyq-modal" class="text-white/70 hover:text-white text-3xl">&times;</button></div><div class="p-6 flex-shrink-0"><div class="flex justify-center bg-black/20 rounded-full p-1"><button class="pyq-tab-button flex-1 py-2 text-sm font-semibold rounded-full" data-exam="cds">CDS</button><button class="pyq-tab-button flex-1 py-2 text-sm font-semibold rounded-full active" data-exam="nda">NDA</button></div></div><div id="pyq-accordion-container" class="overflow-y-auto px-6 pb-6 flex-grow scrollable-content"></div></div></div>
+        <!-- SSB Practice Modal -->
+        <div id="ssb-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-md glass-effect-dark text-white rounded-3xl shadow-lg p-6 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl md:text-3xl font-bold">Premium SSB Practice</h3>
+                    <button id="close-ssb-modal" class="text-white/70 hover:text-white text-3xl">&times;</button>
+                </div>
+                <p class="text-gray-300 mb-8 text-center">Select a module to begin your psych preparation.</p>
+                <div class="flex flex-col space-y-4">
+                    <div class="ssb-drill-card" data-drill="ppdt">
+                        <div class="bg-white/5 p-5 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                            <div class="inline-block bg-green-500/20 text-green-300 rounded-xl p-3 mb-3">
+                                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </div>
+                            <h4 class="font-bold text-lg">PPDT</h4>
+                            <p class="text-sm text-gray-400">Picture Perception</p>
+                        </div>
+                    </div>
+                    <div class="ssb-drill-card" data-drill="wat">
+                        <div class="bg-white/5 p-5 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                            <div class="inline-block bg-blue-500/20 text-blue-300 rounded-xl p-3 mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                            </div>
+                            <h4 class="font-bold text-lg">WAT</h4>
+                            <p class="text-sm text-gray-400">Word Association</p>
+                        </div>
+                    </div>
+                    <div class="ssb-drill-card" data-drill="srt">
+                        <div class="bg-white/5 p-5 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                            <div class="inline-block bg-purple-500/20 text-purple-300 rounded-xl p-3 mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                            </div>
+                            <h4 class="font-bold text-lg">SRT</h4>
+                            <p class="text-sm text-gray-400">Situation Reaction</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PPDT Sets Modal -->
+        <div id="ppdt-sets-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-4xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col"><div class="p-6 border-b border-white/10 flex justify-between items-center"><h3 class="text-2xl font-bold">PPDT Practice Sets</h3><button id="close-ppdt-sets-modal" class="text-white/70 hover:text-white text-3xl">&times;</button></div><div class="p-6 overflow-y-auto scrollable-content"><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"><!-- PPDT set cards injected here --></div></div></div></div>
+        <!-- PPDT Instruction Modal -->
+        <div id="ppdt-instruction-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-3xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col"><div class="p-6 border-b border-white/10 flex justify-between items-center"><h3 id="ppdt-instruction-title" class="text-2xl font-bold">PPDT Set 1 - Instructions</h3><button id="close-ppdt-instruction-modal" class="text-white/70 hover:text-white text-3xl">&times;</button></div><div class="p-6 md:p-8 overflow-y-auto scrollable-content text-gray-300"><h4 class="font-bold text-lg text-white mb-2">Procedure of the Test:</h4><p class="mb-4">You will be shown a picture for 30 seconds. Afterwards, you will have 1 minute to note down details and 4 minutes to write a story.</p><div class="space-y-3"><div class="bg-white/10 p-4 rounded-lg"><strong>Step 1:</strong> Observe the picture for 30 seconds.</div><div class="bg-white/10 p-4 rounded-lg"><strong>Step 2:</strong> Fill in details in the box within 1 minute.</div><div class="bg-white/10 p-4 rounded-lg"><strong>Step 3:</strong> Write a story (100-120 words) in 4 minutes about what led to the situation, what is happening, and the outcome.</div></div><h4 class="font-bold text-lg text-white mt-6 mb-2">Things to Remember:</h4><ul class="list-disc list-inside space-y-2"><li>Your story must be positive and realistic.</li><li>The hero should exhibit leadership qualities.</li><li>Ensure your handwriting is legible.</li></ul></div><div class="p-6 mt-auto border-t border-white/10"><button id="start-ppdt-test-btn" class="w-full bg-white/10 text-white font-bold py-3 px-5 rounded-full hover:bg-white/20 transition-transform hover:scale-105">Start Test</button></div></div></div>
+        <!-- PPDT Test Modal -->
+        <div id="ppdt-test-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-6xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col"><div class="p-4 border-b border-white/10 flex justify-between items-center"><div class="flex items-center gap-4"><button id="ppdt-back-btn" class="text-white/70 hover:text-white text-sm font-bold">&larr; Back</button><h3 id="ppdt-test-title" class="text-xl font-bold">PPDT Test</h3></div><div class="flex items-center gap-4"><div id="ppdt-timer" class="text-2xl font-bold text-yellow-300">04:30</div><button id="ppdt-restart-btn" class="bg-white/10 text-white text-xs font-bold px-3 py-1.5 rounded-full hover:bg-white/20 transition">Restart</button></div></div><div class="p-6 flex-grow overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-6"><div id="ppdt-image-container" class="flex items-center justify-center bg-black/20 rounded-2xl p-4"><img id="ppdt-test-image" src="" alt="PPDT Picture" class="max-h-full max-w-full rounded-lg"></div><div class="flex flex-col gap-4"><div class="flex-shrink-0"><label for="ppdt-details-textarea" class="font-bold mb-2 block">Characters, Mood, Action (1 min)</label><textarea id="ppdt-details-textarea" rows="4" class="w-full p-3 rounded-lg text-sm text-gray-200 placeholder-gray-500 transition" placeholder="Note down your initial observations here..."></textarea></div><div class="flex flex-col flex-grow"><label for="ppdt-story-textarea" class="font-bold mb-2 block">Story (4 mins)</label><textarea id="ppdt-story-textarea" class="w-full h-full flex-grow p-3 rounded-lg text-gray-200 placeholder-gray-500 transition" placeholder="Write your story here..."></textarea></div></div></div><div class="p-6 border-t border-white/10 flex justify-end"><button id="ppdt-analyze-btn" class="bg-white/10 text-white font-bold py-2 px-5 rounded-full hover:bg-white/20 transition-transform hover:scale-105 disabled:opacity-50" disabled>✨ Analyze My Story</button></div></div></div>
+        <!-- PPDT Analysis Modal -->
+        <div id="ppdt-analysis-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-2xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col"><div class="p-6 border-b border-white/10 flex justify-between items-center"><h3 class="text-2xl font-bold">PPDT Story Analysis</h3><button id="close-ppdt-analysis-modal" class="text-white/70 hover:text-white text-3xl">&times;</button></div><div id="ppdt-analysis-content" class="p-6 overflow-y-auto scrollable-content"></div></div></div>
+        
+        <!-- Mock Test Selection Modal -->
+        <div id="mock-test-selection-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-4xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col">
+                <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button id="mock-test-back-btn" class="hidden text-white/70 hover:text-white mr-4">&larr; Back</button>
+                        <h3 id="mock-test-title" class="text-2xl font-bold gradient-text">Select Examination</h3>
+                    </div>
+                    <button id="close-mock-test-modal" class="text-white/70 hover:text-white text-3xl">&times;</button>
+                </div>
+                <div class="p-6 overflow-y-auto scrollable-content flex-grow">
+                    <div id="mock-test-view-exam">
+                        <p class="text-center text-gray-300 mb-6">Choose the exam you want to practice for.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div data-exam-select="cds" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer">
+                                <h4 class="font-bold text-xl">CDS Mock Tests</h4>
+                            </div>
+                            <div data-exam-select="nda" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer opacity-50">
+                                <h4 class="font-bold text-xl">NDA Mock Tests</h4>
+                                <p class="text-sm text-gray-400">(Coming Soon)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="mock-test-view-cds-sets" class="hidden">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div data-mock-set="1" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer flex justify-center items-center h-24"><h4 class="font-bold text-lg">Mock Test 1</h4></div>
+                            <div data-mock-set="2" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer flex justify-center items-center h-24"><h4 class="font-bold text-lg">Mock Test 2</h4></div>
+                            <div data-mock-set="3" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer flex justify-center items-center h-24"><h4 class="font-bold text-lg">Mock Test 3</h4></div>
+                            <div data-mock-set="4" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer flex justify-center items-center h-24"><h4 class="font-bold text-lg">Mock Test 4</h4></div>
+                        </div>
+                    </div>
+                    <div id="mock-test-view-cds-subjects" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div data-subject-select="english" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer"><h4 class="font-bold text-lg">English</h4></div>
+                            <div data-subject-select="gk" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer"><h4 class="font-bold text-lg">General Knowledge</h4></div>
+                            <div data-subject-select="maths" class="bg-white/5 p-6 rounded-2xl text-center hover:bg-white/10 transition-all duration-300 cursor-pointer"><h4 class="font-bold text-lg">Mathematics</h4></div>
+                        </div>
+                    </div>
+                     <div id="mock-test-view-english-topics" class="hidden">
+                        <p class="text-center text-gray-300 mb-6">Select a topic to start the quiz.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+                            <div data-topic-select="idioms" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Idioms</div>
+                            <div data-topic-select="readingComprehension" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Reading Comprehension</div>
+                            <div data-topic-select="sentenceArrangement" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Sentence Arrangement</div>
+                            <div data-topic-select="synonymsAntonyms" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Synonyms & Antonyms</div>
+                            <div data-topic-select="fillInBlanks" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Fill in the Blanks</div>
+                            <div data-topic-select="orderingOfSentence" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Ordering of Sentence</div>
+                            <div data-topic-select="basicGrammar" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Basic Grammar</div>
+                            <div data-topic-select="errorSpotting" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Error Spotting</div>
+                            <div data-topic-select="orderingWords" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Ordering Words</div>
+                            <div data-topic-select="sentenceImprovement" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Sentence Improvement</div>
+                            <div data-topic-select="jumbledSentences" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Jumbled Sentences</div>
+                        </div>
+                    </div>
+                    <div id="mock-test-view-gk-topics" class="hidden">
+                        <p class="text-center text-gray-300 mb-6">Select a topic to start the quiz.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+                            <div data-topic-select="history" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">History</div>
+                            <div data-topic-select="geography" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Geography</div>
+                            <div data-topic-select="polity" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Indian Polity</div>
+                            <div data-topic-select="economy" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Economy</div>
+                            <div data-topic-select="physics" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Physics</div>
+                            <div data-topic-select="chemistry" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Chemistry</div>
+                            <div data-topic-select="biology" class="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition cursor-pointer text-sm">Biology</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CDS Quiz Modal -->
+        <div id="quiz-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div id="quiz-content" class="modal-content w-full max-w-2xl glass-effect-dark text-white rounded-3xl shadow-lg p-6 md:p-8"></div></div>
+        <!-- Quiz Result Modal -->
+        <div id="result-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4"><div class="modal-content w-full max-w-md glass-effect-dark text-white rounded-3xl shadow-lg p-8 text-center"><h3 class="text-2xl font-bold mb-4 gradient-text">Quiz Complete!</h3><p class="text-gray-300 mb-6">Here's how you did:</p><div id="result-score" class="result-score text-6xl font-bold text-green-400 mb-2"></div><p id="result-text" class="font-semibold mb-6"></p><div id="quiz-review-container" class="mt-4 text-left"></div><button id="close-result-modal" class="bg-white/10 text-white font-bold py-3 px-8 rounded-full hover:bg-white/20 transition-all duration-300 w-full mt-4">Close</button></div></div>
+        
+        <!-- WAT & SRT Modals -->
+        <!-- Level Selection Modal -->
+        <div id="ssb-level-selection-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+             <div class="modal-content w-full max-w-xl text-center glass-effect-dark rounded-3xl p-8 sm:p-10 shadow-2xl relative">
+                <button id="ssb-level-back-btn" class="absolute top-4 left-4 text-white/50 hover:text-white transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <h1 id="ssb-level-selection-title" class="text-3xl md:text-4xl font-extrabold shadow-sm mb-8 gradient-text">Select Level</h1>
+                <div id="ssb-levels-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left"></div>
+            </div>
+        </div>
+        
+        <!-- Test Screen Modal -->
+        <div id="ssb-test-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-2xl glass-effect-dark rounded-3xl p-8 sm:p-10 shadow-2xl text-center">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="ssb-question-type" class="text-sm font-bold uppercase tracking-wider px-3 py-1 bg-white/20 rounded-full"></span>
+                    <div id="ssb-question-counter" class="text-lg font-semibold"></div>
+                    <button id="ssb-end-test-btn" class="text-sm font-bold uppercase tracking-wider px-3 py-1 bg-red-500/50 hover:bg-red-500/80 rounded-full transition">End Test</button>
+                </div>
+                <div class="relative w-32 h-32 mx-auto mb-6">
+                    <svg class="w-full h-full" viewBox="0 0 100 100"><circle class="text-white/20" stroke-width="7" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" /><circle id="ssb-timer-progress" class="text-white timer-circle" stroke-width="7" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" style="stroke-dasharray: 283; stroke-dashoffset: 283; transform: rotate(-90deg); transform-origin: 50% 50%;" /></svg>
+                    <div id="ssb-timer-text" class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-4xl font-bold"></div>
+                </div>
+                <div id="ssb-question-display" class="bg-white/10 p-6 rounded-2xl min-h-[120px] flex items-center justify-center mb-6">
+                    <p id="ssb-question-text" class="text-xl md:text-2xl font-semibold"></p>
+                </div>
+                <textarea id="ssb-answer-input" class="w-full bg-white/10 rounded-2xl p-4 text-white placeholder-white/50 border-2 border-transparent focus:border-white/50 focus:outline-none transition" rows="3" placeholder="Type your response here..."></textarea>
+                <button id="ssb-next-btn" class="w-full mt-6 bg-white text-gray-800 font-bold text-lg py-3 rounded-2xl hover:bg-gray-200 transition">Next</button>
+             </div>
+        </div>
+
+        <!-- Results Screen Modal -->
+        <div id="ssb-results-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+             <div class="modal-content w-full max-w-lg text-center glass-effect-dark rounded-3xl p-8 sm:p-10 shadow-2xl">
+                <h1 class="text-4xl font-extrabold shadow-sm mb-4 gradient-text">Test Complete!</h1>
+                <p class="text-lg text-white/80 mb-8">Well done. Consistent practice is key to success.</p>
+                <div id="ssb-answers-summary" class="text-left space-y-4 max-h-96 overflow-y-auto p-4 bg-black/10 rounded-xl mb-8"></div>
+                 <div class="flex flex-col md:flex-row justify-center gap-4 w-full mt-6">
+                    <button id="ssb-restart-btn" class="w-full md:w-auto flex-1 bg-white text-gray-800 font-bold text-lg py-3 rounded-2xl hover:bg-gray-200 transition">Practice Again</button>
+                    <button id="ssb-analyze-answers-btn" class="w-full md:w-auto flex-1 bg-white/10 text-white font-bold text-lg py-3 rounded-2xl hover:bg-white/20 transition-transform hover:scale-105">Analyze with AI ✨</button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- SSB Analysis Modal -->
+        <div id="ssb-analysis-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+            <div class="modal-content w-full max-w-3xl max-h-[90vh] glass-effect-dark text-white rounded-3xl shadow-lg flex flex-col">
+                <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                    <h3 class="text-2xl font-bold">Your SSB Analysis</h3>
+                    <button id="close-ssb-analysis-modal" class="text-white/70 hover:text-white text-3xl">&times;</button>
+                </div>
+                <div id="ssb-analysis-content" class="p-6 overflow-y-auto scrollable-content">
+                    <!-- AI Analysis will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const newsData = [ 
+            { 
+                id: 2, 
+                title: "India-Russia-China Trade", 
+                category: "Geopolitics", 
+                tags: ["Trade", "Economy"], 
+                summary: "An analysis of the complex trade relationships between the three Asian giants.", 
+                stat: "$180Bn+", 
+                statLabel: "Combined Trade", 
+                img: "https://media.assettype.com/deccanherald%2F2024-10-23%2F04n1nait%2FPTI10232024000210A.jpg?w=undefined&auto=format%2Ccompress&fit=max" 
+            }, 
+            { 
+                id: 3, 
+                title: "P75 Project Contract", 
+                category: "Naval Defence", 
+                tags: ["MDL", "Submarine", "Indian Navy"], 
+                summary: "CFF Fluid Control bags a ₹24.16 crore order for the Indian Navy's P75 Submarine Programme.", 
+                stat: "₹24.16 Cr", 
+                statLabel: "Contract Value", 
+                img: "https://raksha-anirveda.com/wp-content/uploads/2023/07/Submarine-Project-75-I.webp"
+            }, 
+            { 
+                id: 4, 
+                title: "Afghanistan Earthquake", 
+                category: "Humanitarian", 
+                tags: ["Disaster", "Afghanistan"], 
+                summary: "Powerful earthquakes and aftershocks have devastated Herat province, with a rising death toll.", 
+                stat: "2,200+", 
+                statLabel: "Estimated Deaths", 
+                img: "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/1562/live/da4dfce0-8721-11f0-8539-299a7a7c0d9c.jpg"
+            },
+            { 
+                id: 1, 
+                title: "GST Tax Rate Reforms", 
+                category: "Economy", 
+                tags: ["Finance", "Policy"], 
+                summary: "Explore the new GST structure set for 2025 in this interactive infographic.", 
+                stat: "3 Slabs", 
+                statLabel: "New Structure", 
+                img: "https://t3.ftcdn.net/jpg/13/40/33/28/360_F_1340332859_4ohqoWzVgTUWgXgbdObFzIcQStKCdr6f.jpg"
+            } 
+        ];
+        const ndaPapersData = { "2025": [ { name: "NDA & NA (I) 2025", subjects: [{name: "Maths", link:"https://upsc.gov.in/sites/default/files/QP-NDA-NA-I-25-MATHEMATICS-150425.pdf"}, {name:"GAT", link:"https://upsc.gov.in/sites/default/files/QP-NDA-NA-I-25-GENERAL-ABILITY-TEST-150425.pdf"}] }, { name: "NDA & NA (II) 2025", subjects: [{name: "Maths", link:"#"}, {name:"GAT", link:"#"}] } ], "2024": [ { name: "NDA & NA (I) 2024", subjects: [{name: "Maths", link:"https://upsc.gov.in/sites/default/files/QP_NDANAI2024_MATHEMATICS_22042024.pdf"}, {name:"GAT", link:"https://upsc.gov.in/sites/default/files/QP_NDANAI2024_GENERAL-ABILITY-TEST_22042024.pdf"}] }, { name: "NDA & NA (II) 2024", subjects: [{name: "Maths", link:"https://upsc.gov.in/sites/default/files/QP-NDA-NA-II-24-MATHEMATICS-020924.pdf"}, {name:"GAT", link:"https://upsc.gov.in/sites/default/files/QP-NDA-NA-II-24-GENERAL-ABILITY-TEST-020924.pdf"}] } ], "2023": [ { name: "NDA & NA (I) 2023", subjects: [{name: "Maths", link:"https://upsc.gov.in/sites/default/files/QP-NDA-I-23-MATHEMATICS-170423.pdf"}, {name:"GAT", link:"https://upsc.gov.in/sites/default/files/QP-NDA-I-23-GENERAL-ABILITY-TEST-170423.pdf"}] }, { name: "NDA & NA (II) 2023", subjects: [{name: "Maths", link:"https://upsc.gov.in/sites/default/files/QP-NDANA-II-2023-Maths-04092023.pdf"}, {name:"GAT", link:"https://upsc.gov.in/sites/default/files/QP-NDANA-II-2023-GAT-04092023.pdf"}] } ], "2022": [ { name: "NDA & NA (I) 2022", subjects: [{name: "Maths", link:"#"}, {name:"GAT", link:"#"}] }, { name: "NDA & NA (II) 2022", subjects: [{name: "Maths", link:"https://upsc.gov.in/sites/default/files/QP-NDA-II-MATHEMATICS-050922.pdf"}, {name:"GAT", link:"https://upsc.gov.in/sites/default/files/QP-CDS-II-22-GENERAL-ABILITY-TEST-050922.pdf"}] } ], "2021": [ { name: "NDA & NA (I) 2021", subjects: [{name: "Maths", link:"#"}, {name:"GAT", link:"#"}] }, { name: "NDA & NA (II) 2021", subjects: [{name: "Maths", link:"#"}, {name:"GAT", link:"#"}] } ] };
+        const cdsPapersData = { "2025": [ { name: "CDS (I) 2025", subjects: [{name: "English", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-I-25-ENGLISH-150425.pdf"}, {name:"GK", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-I-25-GENERAL-KNOWLEDGE-150425.pdf"}, {name:"Maths", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-I-25-ELEMENTARY-MATHEMATICS-150425.pdf"}] }, { name: "CDS (II) 2025", subjects: [{name: "English", link:"#"}, {name:"GK", link:"#"}, {name:"Maths", link:"#"}] } ], "2024": [ { name: "CDS (I) 2024", subjects: [{name: "English", link:"https://upsc.gov.in/sites/default/files/QP_CDSI2024_ENGLISH_22042024.pdf"}, {name:"GK", link:"https://upsc.gov.in/sites/default/files/QP_CDSI2024_GENERAL-KNOWLEDGE_22042024.pdf"}, {name:"Maths", link:"https://upsc.gov.in/sites/default/files/QP_CDSI2024_ELEMENTARY-MATHEMATICS_22042024.pdf"}] }, { name: "CDS (II) 2024", subjects: [{name: "English", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-II-24-ENGLISH-020924.pdf"}, {name:"GK", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-II-24-GENERAL-KNOWLEDGE-020924.pdf"}, {name:"Maths", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-II-24-ELEMENTARY-MATHEMATICS-020924.pdf"}] } ], "2023": [ { name: "CDS (I) 2023", subjects: [{name: "English", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-I-23-ENGLISH-170423.pdf"}, {name:"GK", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-I-23-GENERAL-KNOWLEDGE-170423.pdf"}, {name:"Maths", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-I-23-ELEMENTARY-MATHEMATICS-170423.pdf"}] }, { name: "CDS (II) 2023", subjects: [{name: "English", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-II-2023-Eng-04092023.pdf"}, {name:"GK", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-II-2023-GK-04092023.pdf"}, {name:"Maths", link:"https://upsc.gov.in/sites/default/files/QP-CDSE-II-2023-EleMath-04092023.pdf"}] } ], "2022": [ { name: "CDS (I) 2022", subjects: [{name: "English", link:"#"}, {name:"GK", link:"#"}, {name:"Maths", link:"#"}] }, { name: "CDS (II) 2022", subjects: [{name: "English", link:"https://upsc.gov.in/sites/default/files/QP-CDS-II-22-ENGLISH-050922.pdf"}, {name:"GK", link:"https://upsc.gov.in/sites/default/files/QP-CDS-II-22-GENERAL-ABILITY-TEST-050922.pdf"}, {name:"Maths", link:"https://upsc.gov.in/sites/default/files/QP-CDS-II-22-ELEMENTARY-MATHEMATICS-050922.pdf"}] } ], "2021": [ { name: "CDS (I) 2021", subjects: [{name: "English", link:"#"}, {name:"GK", link:"#"}, {name:"Maths", link:"#"}] }, { name: "CDS (II) 2021", subjects: [{name: "English", link:"#"}, {name:"GK", link:"#"}, {name:"Maths", link:"#"}] } ] };
+        const quizData = {
+             'history': [
+                { question: "The 'Doctrine of Lapse' was introduced by:", options: ["Lord Canning", "Lord Dalhousie", "Lord Curzon", "Lord Mountbatten"], answer: 1 },
+                { question: "The Indus Valley Civilization is also known as:", options: ["Mesopotamian Civilization", "Harappan Civilization", "Egyptian Civilization", "Vedic Civilization"], answer: 1 },
+                { question: "Who was the founder of the Mauryan Empire?", options: ["Ashoka", "Bindusara", "Chandragupta Maurya", "Kanishka"], answer: 2 },
+                { question: "The Third Battle of Panipat was fought between:", options: ["Marathas and Afghans", "Mughals and Rajputs", "British and French", "Sikhs and Mughals"], answer: 0 },
+                { question: "The 'Quit India Movement' was launched in:", options: ["1930", "1942", "1945", "1920"], answer: 1 },
+                { question: "Who wrote the 'Arthashastra'?", options: ["Kalidasa", "Kautilya (Chanakya)", "Harisena", "Banabhatta"], answer: 1 },
+                { question: "The 'Jallianwala Bagh massacre' took place in which city?", options: ["Lahore", "Delhi", "Amritsar", "Kolkata"], answer: 2 },
+                { question: "The title 'Viceroy' was introduced in India in which year?", options: ["1773", "1858", "1909", "1935"], answer: 1 },
+                { question: "The 'Poona Pact' was an agreement between:", options: ["Gandhi and Jinnah", "Nehru and Ambedkar", "Gandhi and Ambedkar", "Tilak and Gokhale"], answer: 2 },
+                { question: "Who is known as the 'Father of the Indian Renaissance'?", options: ["Swami Vivekananda", "Dayanand Saraswati", "Raja Ram Mohan Roy", "Ishwar Chandra Vidyasagar"], answer: 2 }
+            ],
+            'geography': [
+                { question: "Which is the highest peak in the Western Ghats?", options: ["Anamudi", "Doddabetta", "Kalsubai", "Mullayanagiri"], answer: 0 },
+                { question: "The 'Narmada' river originates from:", options: ["Amarkantak Plateau", "Satpura Range", "Vindhya Range", "Maikal Hills"], answer: 0 },
+                { question: "Which state is the largest producer of coffee in India?", options: ["Kerala", "Tamil Nadu", "Karnataka", "Andhra Pradesh"], answer: 2 },
+                { question: "The 'Sundarbans' delta is formed by which rivers?", options: ["Ganga and Brahmaputra", "Ganga and Brahmaputra", "Mahanadi and Godavari", "Krishna and Kaveri"], answer: 1 },
+                { question: "Which is the largest freshwater lake in India?", options: ["Dal Lake", "Wular Lake", "Chilika Lake", "Sambhar Lake"], answer: 1 },
+                { question: "The 'Equator' does NOT pass through which of these continents?", options: ["South America", "Africa", "Asia", "Europe"], answer: 3 },
+                { question: "'El Niño' is a phenomenon that occurs in which ocean?", options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], answer: 3 },
+                { question: "The 'Tropic of Cancer' passes through how many Indian states?", options: ["6", "7", "8", "9"], answer: 2 },
+                { question: "Which country is known as the 'Land of the Rising Sun'?", options: ["China", "South Korea", "Japan", "Thailand"], answer: 2 },
+                { question: "What is the capital of Australia?", options: ["Sydney", "Melbourne", "Canberra", "Perth"], answer: 2 }
+            ],
+            'polity': [
+                { question: "Who is the custodian of the Indian Constitution?", options: ["President of India", "Prime Minister of India", "Parliament of India", "Supreme Court of India"], answer: 3 },
+                { question: "The 'Preamble' to the Indian Constitution was amended by which amendment?", options: ["42nd Amendment", "44th Amendment", "52nd Amendment", "61st Amendment"], answer: 0 },
+                { question: "Which Article deals with the 'Right to Equality'?", options: ["Article 14-18", "Article 19-22", "Article 23-24", "Article 25-28"], answer: 0 },
+                { question: "The concept of 'Judicial Review' in India is taken from which country?", options: ["USA", "UK", "Canada", "Australia"], answer: 0 },
+                { question: "What is the minimum age to be appointed as the Governor of a state?", options: ["25 years", "30 years", "35 years", "40 years"], answer: 2 },
+                { question: "The 'Money Bill' can only be introduced in:", options: ["Lok Sabha", "Rajya Sabha", "Either House", "Joint Session"], answer: 0 },
+                { question: "Who administers the oath of office to the President of India?", options: ["Prime Minister", "Vice President", "Chief Justice of India", "Speaker of Lok Sabha"], answer: 2 },
+                { question: "The 'Panchayati Raj' system was first introduced in which state?", options: ["Andhra Pradesh", "Rajasthan", "Gujarat", "Tamil Nadu"], answer: 1 },
+                { question: "Which part of the Constitution deals with 'Fundamental Rights'?", options: ["Part II", "Part III", "Part IV", "Part V"], answer: 1 },
+                { question: "Who has the power to declare a national emergency?", options: ["Prime Minister", "President", "Parliament", "Chief Justice of India"], answer: 1 }
+            ],
+            'economy': [
+                { question: "What is 'Fiscal Deficit'?", options: ["Total Revenue - Total Expenditure", "Total Revenue - Total Borrowings", "Total Expenditure - Total Revenue (excluding borrowings)", "Total Exports - Total Imports"], answer: 2 },
+                { question: "The 'Reserve Bank of India' was established in which year?", options: ["1921", "1935", "1947", "1950"], answer: 1 },
+                { question: "'GST' in India was implemented from:", options: ["April 1, 2017", "July 1, 2017", "January 1, 2018", "March 31, 2017"], answer: 1 },
+                { question: "Which committee recommended the establishment of 'NABARD'?", options: ["Sivaraman Committee", "Narasimham Committee", "Malhotra Committee", "Raghuram Rajan Committee"], answer: 0 },
+                { question: "What does 'Repo Rate' mean?", options: ["Rate at which RBI borrows from banks", "Rate at which banks borrow from RBI", "Rate of interest on savings accounts", "Rate of interest on fixed deposits"], answer: 1 },
+                { question: "Who is the chairman of the 'NITI Aayog'?", options: ["President", "Prime Minister", "Finance Minister", "CEO of NITI Aayog"], answer: 1 },
+                { question: "The 'Five Year Plans' in India were inspired by which country?", options: ["USA", "UK", "USSR (Soviet Union)", "Germany"], answer: 2 },
+                { question: "What is the base year for calculating India's GDP?", options: ["2004-05", "2010-11", "2011-12", "2014-15"], answer: 2 },
+                { question: "The 'Pradhan Mantri Jan Dhan Yojana' is a scheme for:", options: ["Rural housing", "Financial inclusion", "Health insurance", "LPG subsidy"], answer: 1 },
+                { question: "Which sector contributes the most to India's GDP?", options: ["Agriculture", "Manufacturing", "Services", "Mining"], answer: 2 }
+            ],
+            'physics': [
+                { question: "What is the SI unit of electric current?", options: ["Volt", "Watt", "Ohm", "Ampere"], answer: 3 },
+                { question: "A convex lens is used to correct which vision defect?", options: ["Myopia (Nearsightedness)", "Hypermetropia (Farsightedness)", "Astigmatism", "Presbyopia"], answer: 1 },
+                { question: "The phenomenon of splitting of light into its constituent colors is known as:", options: ["Reflection", "Refraction", "Dispersion", "Diffraction"], answer: 2 },
+                { question: "What is the escape velocity of Earth?", options: ["9.8 km/s", "11.2 km/s", "15.5 km/s", "7.9 km/s"], answer: 1 },
+                { question: "Which law of motion gives the measure of force?", options: ["First Law", "Second Law", "Third Law", "Law of Gravitation"], answer: 1 },
+                { question: "The sound waves in air are:", options: ["Transverse", "Longitudinal", "Electromagnetic", "Both A and B"], answer: 1 },
+                { question: "The resistance of an ideal ammeter is:", options: ["Infinite", "Zero", "Very high", "Very low"], answer: 1 },
+                { question: "What is the principle behind a nuclear reactor?", options: ["Nuclear Fusion", "Nuclear Fission", "Chemical Reaction", "Chain Reaction"], answer: 1 },
+                { question: "The sky appears blue due to:", options: ["Scattering of light", "Reflection of light", "Refraction of light", "Dispersion of light"], answer: 0 },
+                { question: "One horsepower is equal to how many watts?", options: ["746 Watts", "786 Watts", "756 Watts", "766 Watts"], answer: 0 }
+            ],
+            'chemistry': [
+                { question: "What is the chemical name for 'baking soda'?", options: ["Sodium Carbonate", "Sodium Bicarbonate", "Calcium Carbonate", "Sodium Chloride"], answer: 1 },
+                { question: "Which is the hardest substance found on Earth?", options: ["Gold", "Iron", "Diamond", "Platinum"], answer: 2 },
+                { question: "The main constituent of natural gas is:", options: ["Methane", "Ethane", "Butane", "Propane"], answer: 0 },
+                { question: "Which acid is present in lemon?", options: ["Acetic Acid", "Citric Acid", "Lactic Acid", "Tartaric Acid"], answer: 1 },
+                { question: "Brass is an alloy of:", options: ["Copper and Zinc", "Copper and Tin", "Copper and Silver", "Copper and Nickel"], answer: 0 },
+                { question: "The pH of pure water is:", options: ["6", "7", "8", "5"], answer: 1 },
+                { question: "Which gas is used in fire extinguishers?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"], answer: 2 },
+                { question: "The process of coating iron with zinc is called:", options: ["Galvanization", "Electroplating", "Anodizing", "Corrosion"], answer: 0 },
+                { question: "Which of the following is a noble gas?", options: ["Nitrogen", "Oxygen", "Helium", "Hydrogen"], answer: 2 },
+                { question: "The most abundant element in the Earth's crust is:", options: ["Iron", "Silicon", "Aluminum", "Oxygen"], answer: 3 }
+            ],
+            'biology': [
+                { question: "Which part of the cell is known as the 'powerhouse'?", options: ["Nucleus", "Ribosome", "Mitochondria", "Golgi Apparatus"], answer: 2 },
+                { question: "Deficiency of Vitamin C causes which disease?", options: ["Scurvy", "Rickets", "Beriberi", "Night Blindness"], answer: 0 },
+                { question: "Which is the largest gland in the human body?", options: ["Pancreas", "Liver", "Salivary Gland", "Thyroid"], answer: 1 },
+                { question: "The process by which plants prepare their food is called:", options: ["Respiration", "Photosynthesis", "Transpiration", "Germination"], answer: 1 },
+                { question: "Which blood group is known as the 'universal donor'?", options: ["A", "B", "AB", "O"], answer: 3 },
+                { question: "The study of insects is known as:", options: ["Ornithology", "Entomology", "Mycology", "Botany"], answer: 1 },
+                { question: "Which of the following is a water-borne disease?", options: ["Malaria", "Dengue", "Cholera", "Tuberculosis"], answer: 2 },
+                { question: "The pigment that gives red color to blood is:", options: ["Melanin", "Hemoglobin", "Chlorophyll", "Bilirubin"], answer: 1 },
+                { question: "Which is the longest bone in the human body?", options: ["Stapes", "Humerus", "Femur", "Tibia"], answer: 2 },
+                { question: "The functional unit of the kidney is:", options: ["Neuron", "Nephron", "Alveoli", "Villi"], answer: 1 }
+            ],
+            'maths': Array(10).fill(0).map((_, i) => ({ question: `Placeholder Maths Question ${i+1}?`, options: ["A", "B", "C", "D"], answer: 1})),
+            'idioms': [
+                { question: "What is the meaning of 'To be in a tight corner'?", options: ["In a closed room", "In a small field", "In a difficult situation", "In a meadow"], answer: 2 },
+                { question: "What does 'A chip on your shoulder' mean?", options: ["Carrying a burden", "Being angry about something that happened in the past", "A mark of distinction", "A physical ailment"], answer: 1 },
+                { question: "What is the meaning of 'To bite the dust'?", options: ["To eat voraciously", "To have nothing to eat", "To eat roots", "To fail or die"], answer: 3 },
+                { question: "What does 'To spill the beans' mean?", options: ["To reveal a secret", "To misbehave", "To keep secrets", "To talk irrelevantly"], answer: 0 },
+                { question: "What is the meaning of 'To be all at sea'?", options: ["A family voyage", "Lost and confused", "In the middle of the ocean", "A string of islands"], answer: 1 },
+                { question: "What does 'To smell a rat' mean?", options: ["To see a dead rat", "To suspect a trick or deceit", "To misunderstand", "To have a bad smell"], answer: 1 },
+                { question: "What is a 'wild goose chase'?", options: ["A fruitful search", "A pointless search", "To hunt a goose", "A long journey"], answer: 1 },
+                { question: "What does 'To throw in the towel' mean?", options: ["To fight and struggle", "To admit defeat", "To get success", "To think of a solution"], answer: 1 },
+                { question: "What does 'Once in a blue moon' mean?", options: ["Very often", "On a full moon night", "Very rarely", "Every day"], answer: 2 },
+                { question: "What is the meaning of 'To hit the nail on the head'?", options: ["To make the right point", "To hit someone", "To make a loud noise", "To work hard"], answer: 0 }
+            ],
+            'readingComprehension': [
+                { question: "Passage: The sun emits vast amounts of energy. This energy, known as solar radiation, travels through space... What is the primary source of solar radiation?", options: ["The Earth's core", "The Sun", "Cosmic rays", "Nuclear fusion on Jupiter"], answer: 1 },
+                { question: "What is the main idea of the passage?", options: ["The sun is hot", "The sun produces energy", "Space is vast", "Jupiter is a gas giant"], answer: 1 },
+                { question: "The word 'emits' is closest in meaning to:", options: ["Absorbs", "Releases", "Contains", "Destroys"], answer: 1 },
+                { question: "According to the passage, where does solar radiation travel?", options: ["Only to Earth", "Through the atmosphere", "Through space", "Only within the sun"], answer: 2 },
+                { question: "The passage is most likely from a text on:", options: ["Geology", "Biology", "Astronomy", "History"], answer: 2 },
+                { question: "The tone of the passage is:", options: ["Informative", "Sarcastic", "Humorous", "Fictional"], answer: 0 },
+                { question: "What can be inferred about solar energy?", options: ["It is a new discovery", "It is weak", "It is a powerful source of energy", "It is dangerous"], answer: 2 },
+                { question: "The word 'vast' means:", options: ["Small", "Tiny", "Enormous", "Insignificant"], answer: 2 },
+                { question: "What is another term for solar energy mentioned in the passage?", options: ["Moonlight", "Starlight", "Cosmic energy", "Solar radiation"], answer: 3 },
+                { question: "The passage implies that without the sun, Earth would be:", options: ["Warmer", "Dark and cold", "Unchanged", "Brighter"], answer: 1 }
+            ],
+            'sentenceArrangement': [
+                { question: "Arrange the parts: (P) for centuries (Q) have been used (R) medicinal plants (S) to cure diseases.", options: ["RQSP", "RPSQ", "RQPS", "RSQP"], answer: 2 },
+                { question: "Arrange the parts: (P) the progress of (Q) has been very rapid (R) in the last few decades (S) science and technology.", options: ["SPQR", "SQPR", "PSQR", "SPRQ"], answer: 0 },
+                { question: "Arrange the parts: (P) a crucial role (Q) in the development (R) of a nation (S) education plays.", options: ["SPQR", "SQRP", "SPRQ", "SPQR"], answer: 3 },
+                { question: "Arrange the parts: (P) is a complex process (Q) that requires dedication (R) learning a new language (S) and hard work.", options: ["RPSQ", "RQPS", "RPQS", "RSQP"], answer: 0 },
+                { question: "Arrange the parts: (P) is essential for (Q) a balanced diet (R) maintaining good health (S) and well-being.", options: ["QPRS", "QRPS", "QPSR", "QRSP"], answer: 2 },
+                { question: "Arrange the parts: (P) the government (Q) to improve infrastructure (R) has launched (S) several new schemes.", options: ["PRSQ", "PSQR", "PRQS", "PSRQ"], answer: 0 },
+                { question: "Arrange the parts: (P) the world (Q) climate change (R) is one of the biggest (S) challenges facing.", options: ["QRSP", "QSRP", "QRPS", "QSPR"], answer: 0 },
+                { question: "Arrange the parts: (P) has revolutionized (Q) the way we communicate (R) the invention of the internet (S) and access information.", options: ["RPSQ", "RPQS", "RSQP", "RSPQ"], answer: 0 },
+                { question: "Arrange the parts: (P) to the economy (Q) small and medium enterprises (R) make a significant contribution (S) of the country.", options: ["QRPS", "QRSP", "QPRS", "QRPS"], answer: 1 },
+                { question: "Arrange the parts: (P) India is known (Q) for its rich (R) cultural heritage (S) and diversity.", options: ["QPRS", "QPSR", "QRPS", "QRSP"], answer: 1 }
+            ],
+            'synonymsAntonyms': [
+                { question: "SYNONYM for 'Obsolete'?", options: ["Modern", "Outdated", "Current", "Fashionable"], answer: 1 },
+                { question: "ANTONYM for 'Genuine'?", options: ["Authentic", "Real", "Sincere", "Spurious"], answer: 3 },
+                { question: "SYNONYM for 'Diligent'?", options: ["Lazy", "Careless", "Hardworking", "Inactive"], answer: 2 },
+                { question: "ANTONYM for 'Hostile'?", options: ["Unfriendly", "Aggressive", "Friendly", "Antagonistic"], answer: 2 },
+                { question: "SYNONYM for 'Plausible'?", options: ["Unlikely", "Believable", "Impossible", "Absurd"], answer: 1 },
+                { question: "ANTONYM for 'Abate'?", options: ["Decrease", "Diminish", "Intensify", "Subside"], answer: 2 },
+                { question: "SYNONYM for 'Lucid'?", options: ["Confusing", "Vague", "Clear", "Obscure"], answer: 2 },
+                { question: "ANTONYM for 'Succinct'?", options: ["Brief", "Concise", "Terse", "Verbose"], answer: 3 },
+                { question: "SYNONYM for 'Inevitable'?", options: ["Avoidable", "Uncertain", "Unavoidable", "Optional"], answer: 2 },
+                { question: "ANTONYM for 'Trivial'?", options: ["Insignificant", "Minor", "Important", "Petty"], answer: 2 }
+            ],
+            'fillInBlanks': [
+                { question: "The committee has to submit its report ___ two months.", options: ["by", "within", "on", "at"], answer: 1 },
+                { question: "He is not eligible ___ this post.", options: ["for", "to", "with", "at"], answer: 0 },
+                { question: "The new manager is very popular ___ the employees.", options: ["between", "among", "with", "in"], answer: 1 },
+                { question: "She has been suffering from fever ___ last week.", options: ["for", "from", "since", "by"], answer: 2 },
+                { question: "He is senior ___ me by two years.", options: ["than", "to", "from", "of"], answer: 1 },
+                { question: "The train is expected to arrive ___ platform six.", options: ["in", "on", "at", "by"], answer: 2 },
+                { question: "I prefer tea ___ coffee.", options: ["than", "over", "from", "to"], answer: 3 },
+                { question: "She is not aware ___ the consequences.", options: ["of", "about", "for", "with"], answer: 0 },
+                { question: "The brave youth jumped ___ the river to save the drowning child.", options: ["in", "into", "on", "upon"], answer: 1 },
+                { question: "He was accused ___ theft.", options: ["for", "of", "with", "on"], answer: 1 }
+            ],
+             'orderingOfSentence': [
+                { question: "1. The fox was very hungry. P. He saw a crow with a piece of cheese. Q. He went in search of food. R. It was sitting on a branch. S. He found nothing to eat. 6. He thought of a plan to get it.", options: ["QSPR", "SQPR", "QSRP", "SQPR"], answer: 3 },
+                { question: "1. The city is facing a major water crisis. P. The government has urged citizens to conserve water. Q. The reservoirs are at an all-time low. R. Many areas are receiving water only once a week. S. This is due to scanty rainfall this year. 6. The situation is expected to worsen.", options: ["SQRP", "SPQR", "QSRP", "SRQP"], answer: 0 },
+                { question: "1. It was a bright sunny morning. P. He decided to go for a picnic. Q. Ram woke up feeling cheerful. R. He packed a basket with food and drinks. S. The weather was perfect for an outing. 6. He set off for the nearby park.", options: ["QSPR", "QSRP", "QRSP", "QPSR"], answer: 0 },
+                { question: "1. India is a land of diverse cultures. P. This diversity is reflected in its art and architecture. Q. Each state has its unique traditions and customs. R. People from different religions live together in harmony. S. This makes India a vibrant and colorful nation. 6. We should be proud of our heritage.", options: ["QRPS", "QPRS", "RQPS", "RQSP"], answer: 0 },
+                { question: "1. The annual function of our school was held yesterday. P. The chief guest gave away the prizes. Q. The cultural program was a great success. R. The principal read out the annual report. S. Many students participated in the events. 6. The function ended with the national anthem.", options: ["RSQP", "RQSP", "SQRP", "SRQP"], answer: 3 },
+                { question: "1. Deforestation has become a major environmental concern. P. It leads to soil erosion and loss of biodiversity. Q. Large areas of forests are being cleared for agriculture and industry. R. This has a severe impact on the climate. S. We must take immediate steps to stop it. 6. Planting more trees is the need of the hour.", options: ["QRPS", "QPRS", "RQPS", "RQSP"], answer: 1 },
+                { question: "1. The invention of the printing press was a landmark in human history. P. It made books cheaper and more accessible. Q. Before that, books were handwritten and rare. R. This led to the spread of knowledge and ideas. S. Johannes Gutenberg is credited with this invention. 6. It played a key role in the Renaissance.", options: ["SQPR", "SRPQ", "QSPR", "QRSP"], answer: 2 },
+                { question: "1. The old man was walking down the street. P. He saw a young boy crying. Q. He asked the boy what the matter was. R. The boy said he had lost his way. S. The old man decided to help him. 6. He took the boy to the nearby police station.", options: ["PQRS", "PRQS", "PSQR", "PSRQ"], answer: 0 },
+                { question: "1. Technology has changed our lives completely. P. We can now connect with people from all over the world. Q. The internet has brought information to our fingertips. R. Smartphones have become an indispensable part of our lives. S. It has made our lives faster and more convenient. 6. However, we must use it wisely.", options: ["SRQP", "SQRP", "RSQP", "RQSP"], answer: 0 },
+                { question: "1. The sun began to set. P. The birds started returning to their nests. Q. The sky was painted in shades of orange and red. R. A cool breeze started blowing. S. The farmers were returning home from their fields. 6. Night was fast approaching.", options: ["QRPS", "QPRS", "RQSP", "RQPS"], answer: 0 }
+            ],
+            'basicGrammar': [
+                { question: "Which of the following is a common noun?", options: ["Ganges", "River", "India", "Delhi"], answer: 1 },
+                { question: "Identify the abstract noun in the sentence: 'Honesty is the best policy.'", options: ["Honesty", "best", "policy", "is"], answer: 0 },
+                { question: "Choose the correct pronoun: 'My sister and ___ went to the market.'", options: ["me", "I", "myself", "mine"], answer: 1 },
+                { question: "Which sentence uses the correct form of the verb? 'The news ___ bad.'", options: ["are", "is", "were", "have"], answer: 1 },
+                { question: "Identify the adjective in the sentence: 'The beautiful rainbow soon faded away.'", options: ["rainbow", "soon", "faded", "beautiful"], answer: 3 },
+                { question: "Which degree of comparison is used? 'This is the tallest building in the city.'", options: ["Positive", "Comparative", "Superlative", "None"], answer: 2 },
+                { question: "Identify the adverb in the sentence: 'He runs quickly.'", options: ["He", "runs", "quickly", "None"], answer: 2 },
+                { question: "Choose the correct preposition: 'The book is ___ the table.'", options: ["in", "at", "on", "over"], answer: 2 },
+                { question: "Which of the following is a coordinating conjunction?", options: ["Although", "Because", "But", "Since"], answer: 2 },
+                { question: "Identify the type of sentence: 'What a pleasant surprise!'", options: ["Declarative", "Interrogative", "Imperative", "Exclamatory"], answer: 3 }
+            ],
+            'errorSpotting': [
+                { question: "Find the error: (A) The informations you provided / (B) were not / (C) useful at all. / (D) No error", options: ["A", "B", "C", "D"], answer: 0 },
+                { question: "Find the error: (A) He is one of / (B) the most intelligent boy / (C) in our school. / (D) No error", options: ["A", "B", "C", "D"], answer: 1 },
+                { question: "Find the error: (A) I am having / (B) a lot of books / (C) on this subject. / (D) No error", options: ["A", "B", "C", "D"], answer: 0 },
+                { question: "Find the error: (A) Despite of being rich, / (B) he is not / (C) happy in his life. / (D) No error", options: ["A", "B", "C", "D"], answer: 0 },
+                { question: "Find the error: (A) He, you and I / (B) will go to the / (C) party tonight. / (D) No error", options: ["A", "B", "C", "D"], answer: 0 },
+                { question: "Find the error: (A) The cattle is / (B) grazing in / (C) the field. / (D) No error", options: ["A", "B", "C", "D"], answer: 0 },
+                { question: "Find the error: (A) I prefer coffee / (B) than tea in / (C) the morning. / (D) No error", options: ["A", "B", "C", "D"], answer: 1 },
+                { question: "Find the error: (A) He is senior / (B) than me / (C) by two years. / (D) No error", options: ["A", "B", "C", "D"], answer: 1 },
+                { question: "Find the error: (A) The police has / (B) arrested the / (C) thief. / (D) No error", options: ["A", "B", "C", "D"], answer: 0 },
+                { question: "Find the error: (A) Neither of the two brothers / (B) are / (C) eligible for this post. / (D) No error", options: ["A", "B", "C", "D"], answer: 1 }
+            ],
+            'orderingWords': [
+                { question: "Arrange: (P) in the class (Q) is the (R) most intelligent boy (S) he", options: ["SQRP", "SQPR", "SPQR", "SRPQ"], answer: 1 },
+                { question: "Arrange: (P) a new car (Q) my father (R) is going to buy (S) next month", options: ["QRPS", "QPRS", "RQPS", "RQSP"], answer: 0 },
+                { question: "Arrange: (P) very hard (Q) for the examination (R) she is (S) studying", options: ["RSQP", "RSPQ", "SQRP", "SPQR"], answer: 1 },
+                { question: "Arrange: (P) our country (Q) we must (R) work hard for (S) the progress of", options: ["QRSP", "QSRP", "RQSP", "RQPS"], answer: 0 },
+                { question: "Arrange: (P) a beautiful poem (Q) in the competition (R) she recited (S) yesterday", options: ["RSQP", "RSPQ", "SPQR", "SQRP"], answer: 0 },
+                { question: "Arrange: (P) in the east (Q) the sun (R) rises (S) every day", options: ["QRPS", "QPRS", "RQPS", "RQSP"], answer: 0 },
+                { question: "Arrange: (P) a healthy lifestyle (Q) regular exercise (R) is important for (S) maintaining", options: ["QRSP", "QSRP", "RQSP", "RQPS"], answer: 0 },
+                { question: "Arrange: (P) the environment (Q) we should (R) protect (S) from pollution", options: ["QRPS", "QRSP", "QSRP", "QRPS"], answer: 3 },
+                { question: "Arrange: (P) a lot of (Q) this book (R) useful information (S) contains", options: ["QSPR", "QSRP", "QRSP", "QRPS"], answer: 0 },
+                { question: "Arrange: (P) the homeless (Q) the volunteers (R) distributed blankets to (S) during the winter", options: ["QRPS", "QSRP", "RQPS", "RSQP"], answer: 0 }
+            ],
+             'sentenceImprovement': [
+                { question: "He is senior **than** me.", options: ["to", "from", "of", "No improvement"], answer: 0 },
+                { question: "I have seen that film last year.", options: ["saw", "had seen", "have been seeing", "No improvement"], answer: 0 },
+                { question: "The patient **had died** before the doctor arrived.", options: ["died", "was dead", "has died", "No improvement"], answer: 3 },
+                { question: "He is **addicted to smoke**.", options: ["addicted to smoking", "addicted of smoking", "addicted in smoking", "No improvement"], answer: 0 },
+                { question: "I am **looking forward to meet** you.", options: ["looking forward to meeting", "looking forward for meeting", "looking forward in meeting", "No improvement"], answer: 0 },
+                { question: "He is **one of the best player** in the team.", options: ["one of the best players", "one of the better player", "the best player", "No improvement"], answer: 0 },
+                { question: "Neither he **nor his friends is** coming.", options: ["nor his friends are", "or his friends are", "or his friends is", "No improvement"], answer: 0 },
+                { question: "The teacher **gave the students some advices**.", options: ["some advice", "an advice", "many advices", "No improvement"], answer: 0 },
+                { question: "He **did a mistake** in the calculation.", options: ["made a mistake", "has done a mistake", "had made a mistake", "No improvement"], answer: 0 },
+                { question: "I wish **I was** a bird.", options: ["I were", "I am", "I had been", "No improvement"], answer: 0 }
+            ],
+            'jumbledSentences': [
+                { question: "Rearrange the jumbled parts to form a meaningful sentence: A. the progress of B. has been very rapid C. in the last few decades D. science and technology", options: ["DBCA", "DCBA", "ACBD", "ADBC"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. a crucial role B. in the development C. of a nation D. education plays", options: ["DABC", "DBCA", "DCAB", "DACB"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. is a complex process B. that requires dedication C. learning a new language D. and hard work", options: ["CABD", "CBAD", "CDAB", "CDBA"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. is essential for B. a balanced diet C. maintaining good health D. and well-being", options: ["BACD", "BCAD", "BDAC", "BADC"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. the government B. to improve infrastructure C. has launched D. several new schemes", options: ["ACDB", "ADCB", "ABCD", "ADBC"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. the world B. climate change C. is one of the biggest D. challenges facing", options: ["BCDA", "BDCA", "BCAD", "BDAC"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. has revolutionized B. the way we communicate C. the invention of the internet D. and access information", options: ["CABD", "CBAD", "CDAB", "CDBA"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. to the economy B. small and medium enterprises C. make a significant contribution D. of the country", options: ["BCAD", "BDAC", "BCDA", "BDCA"], answer: 0 },
+                { question: "Rearrange the jumbled parts: A. for its rich B. India is known C. cultural heritage D. and diversity", options: ["BACD", "BCAD", "BDAC", "BADC"], answer: 1 },
+                { question: "Rearrange the jumbled parts: A. in the class B. is the C. most intelligent boy D. he", options: ["DBCA", "DCBA", "DABC", "DACB"], answer: 0 }
+            ],
+        };
+        const ppdtSetsData = [
+            { id: 1, image: 'https://ssbcrackexams.com/wp-content/uploads/2022/06/image-12.png' },
+            { id: 2, image: 'https://www.defenceguru.co.in/DF/Admin/pages/Gallery/ppdt--15.jpg' },
+            { id: 3, image: 'https://www.defenceguru.co.in/DF/Admin/pages/Gallery/ppdt--17.jpg' },
+            { id: 4, image: 'https://www.defenceguru.co.in/DF/Admin/pages/Gallery/ppdt-19.jpg' },
+            { id: 5, image: 'https://www.defenceguru.co.in/DF/Admin/pages/Gallery/ppdt--11.jpg' },
+            { id: 6, image: 'https://ssbace.com/tat_images/SSB_PPDT_AND_TAT_COMBINED_EXAMPLES.jpg' },
+            { id: 7, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcGxejUgDZnVJQonIX6wFELigi1yo0xcipFQ&s' },
+            { id: 8, image: 'https://ssbcrackexams.com/wp-content/uploads/2022/06/image-20.png' },
+            { id: 9, image: 'https://ssbcrackexams.com/wp-content/uploads/2022/06/image-17.png' },
+            { id: 10, image: 'https://ssbcrackexams.com/wp-content/uploads/2022/06/image-18.png' },
+            { id: 11, image: 'https://ssbcrackexams.com/wp-content/uploads/2024/11/PPDT_th.jpg' },
+            { id: 12, image: 'https://ssbace.com/tat_images/PPDT_BLUR.jpg' }
+        ];
+
+        const srt_lvl1 = ["You are on your way to an exam and see an old man trip and fall. What do you do?", "Your friend asks to copy your homework. What is your response?", "You are in a library and people next to you are talking loudly.", "You find a wallet on a park bench.", "You have been given too much change by a shopkeeper.", "Your younger sibling is struggling with their studies.", "While playing, you accidentally break a neighbor's window pane.", "You are the last one to leave a classroom and notice the lights and fans are on.", "You see a person trying to steal something from a shop.", "A new student has joined your class and seems lonely."];
+        const srt_lvl2 = ["You are the team captain and your best player is not following the game plan. What will you do?", "You are in charge of a group trek and one member sprains their ankle badly.", "You witness your close friend cheating in an important test.", "While traveling, you realize the train is heading in the wrong direction.", "Your parents are against your chosen career path.", "You are given a task at work that you believe is unethical.", "You are in a group project and one member is not contributing at all.", "You are driving and another car bumps into yours, causing a minor scratch.", "You notice a small fire starting in a public dustbin.", "A junior at work is constantly being criticized by a senior colleague.", "You have two important deadlines clashing on the same day.", "You are leading a college event and are running low on funds.", "You are in a crowded place and you see a child crying, separated from their parents.", "Your friend reveals a secret to you and makes you promise not to tell anyone, but it's something dangerous.", "You overhear your colleagues gossiping about your boss."];
+        const srt_lvl3 = ["You are leading a patrol in a sensitive area and lose radio contact with your base.", "During an outdoor camp, your team's food supplies are spoiled by rain.", "You are a lifeguard and see two people struggling in the water at the same time, far apart.", "Your superior gives you an order that contradicts a previous, more critical order.", "You are in a boat that capsizes in the middle of a lake. Not everyone can swim.", "You discover a serious security flaw in your company's online system.", "You are responsible for a team, and a false rumor is spreading among them, causing panic.", "While on duty, you apprehend someone for a minor offense, and they try to bribe you.", "You are in a hostile territory and have to guide your team back to safety with a broken compass.", "You are in charge of a relief mission in a flood-affected area with limited supplies.", "A vital piece of equipment for a mission fails just before it starts.", "You are representing your country in a negotiation and the other party becomes aggressive.", "You are in a survival situation and have to find a source of clean drinking water.", "You must defuse a conflict between two local groups in a village where you are posted.", "You suspect one of your own team members is leaking sensitive information.", "You have to cross a fast-flowing river with your team and there is no bridge.", "You are the first responder at a major road accident scene.", "You are on night watch and you spot suspicious activity near your camp's perimeter.", "You are tasked with a mission that has a very high probability of failure.", "Your team is exhausted and demoralized, but the mission must continue."];
+        const srt_lvl4 = ["You are commanding a platoon and you are ambushed and outnumbered by the enemy.", "You have captured an enemy soldier who might have critical intelligence but is refusing to talk.", "You have to make a decision that will save many lives but will involve sacrificing one of your own soldiers.", "Your helicopter crashes in a dense, unknown jungle behind enemy lines.", "You intercept a coded enemy message but do not have the key to decipher it.", "During a critical mission, you realize your map is outdated and the terrain has changed.", "You are in a hostage situation and you get a brief opportunity to neutralize the captor.", "You have to lead your men across a minefield to achieve a strategic objective.", "Your base is under attack and you are in charge of its defense with limited ammunition.", "You are on a peace-keeping mission and a mob of angry civilians is blocking your convoy.", "You find out that a senior officer, whom you respect, is involved in corruption.", "You have to jump from a burning aircraft into the sea.", "You are tasked to lead a commando raid on a terrorist hideout.", "A natural disaster strikes your area of operation, and you must shift from a combat to a humanitarian role instantly.", "You are in a submarine that has lost power and is stuck on the ocean floor.", "You have to convince a local tribe to cooperate with your army against insurgents.", "You are on a solo reconnaissance mission and your equipment is damaged.", "You discover that the enemy has laid a trap for another unit of your army, and you cannot contact them.", "You are asked to volunteer for a suicide mission that is critical for the nation's security.", "A fellow officer panics under fire, endangering the entire team.", "You have to disarm a bomb with very little time left.", "You are negotiating with a terrorist who has a list of demands.", "You are caught in a crossfire between two warring factions in a foreign country.", "Your water source in the desert is poisoned.", "You are framed for a crime you did not commit while on an overseas posting.", "You must take command after your commanding officer is neutralized in action.", "You are forced to land your fighter jet in enemy territory.", "You have to survive in extreme cold conditions after an avalanche.", "You witness an act of extreme bravery by a soldier that goes against standard operating procedure.", "You are face to face with an armed enemy soldier, and both of you are out of bullets."];
+        
+        const wat_lvl1 = ["Honesty", "Courage", "Friend", "Success", "Team", "Duty", "Happy", "Music", "Family", "Book"];
+        const wat_lvl2 = ["Effort", "Opinion", "Future", "Discipline", "Attack", "Peace", "Polite", "Trust", "System", "Choice", "Group", "Responsibility", "Serious", "Leader", "Defeat"];
+        const wat_lvl3 = ["Risk", "Lonely", "Impossible", "Crisis", "Failure", "Criticism", "Alone", "Decision", "Repeat", "Sacrifice", "Trust", "Weapon", "Alert", "Thief", "Sorry", "Quarrel", "Difficult", "Blood", "Fear", "Mistake"];
+        const wat_lvl4 = ["Betrayal", "Guilt", "Final", "Ego", "Incomplete", "Zeal", "Death", "Confront", "Mercy", "Power", "Revenge", "Coward", "Temptation", "Danger", "Nervous", "Refugee", "Hijack", "Terrorist", "Surrender", "War", "Accident", "Poison", "Shoot", "Riot", "Grief", "Panic", "Pain", "Insult", "Lie", "Reject"];
+
+        const ssbLevelData = {
+            SRT: [
+                { level: 1, title: 'Beginner', q: 10, time: 90, goal: 'Learn to form complete, logical responses.' },
+                { level: 2, title: 'Intermediate', q: 15, time: 60, goal: 'Improve speed and clarity.' },
+                { level: 3, title: 'Advanced', q: 20, time: 45, goal: 'Replicate near test conditions.' },
+                { level: 4, title: 'Mastery', q: 30, time: 30, goal: 'Final simulation of actual SSB.' },
+            ],
+            WAT: [
+                { level: 1, title: 'Beginner', q: 10, time: 15, goal: 'Build confidence with basic words.' },
+                { level: 2, title: 'Intermediate', q: 15, time: 15, goal: 'Practice with a wider range of words.' },
+                { level: 3, title: 'Advanced', q: 20, time: 15, goal: 'Handle abstract and negative words.' },
+                { level: 4, title: 'Mastery', q: 30, time: 15, goal: 'Instant association under pressure.' },
+            ]
+        };
+        
+        const ssbQuestions = {
+            SRT: { 1: srt_lvl1, 2: srt_lvl2, 3: srt_lvl3, 4: srt_lvl4 },
+            WAT: { 1: wat_lvl1, 2: wat_lvl2, 3: wat_lvl3, 4: wat_lvl4 }
+        };
+
+        // DOM Elements
+        const allModals = document.querySelectorAll('.fixed.z-50');
+        const getEl = (id) => document.getElementById(id);
+        const infographicContainer = getEl('infographic-container'), newsSearch = getEl('news-search');
+        const afghanistanModal = getEl('afghanistan-modal'), closeAfghanistanModal = getEl('close-afghanistan-modal');
+        const p75Modal = getEl('p75-modal'), closeP75Modal = getEl('close-p75-modal');
+        const tradeModal = getEl('trade-modal'), closeTradeModal = getEl('close-trade-modal');
+        const gstModal = getEl('gst-modal'), closeGstModal = getEl('close-gst-modal');
+        const pyqModal = getEl('pyq-modal'), explorePyqBtn = getEl('explore-pyq-btn'), closePyqBtn = getEl('close-pyq-modal');
+        const ssbModal = getEl('ssb-modal'), ssbPracticeBtn = getEl('ssb-practice-btn'), closeSsbBtn = getEl('close-ssb-modal');
+        const ppdtSetsModal = getEl('ppdt-sets-modal'), closePpdtSetsModal = getEl('close-ppdt-sets-modal');
+        const ppdtInstructionModal = getEl('ppdt-instruction-modal'), closePpdtInstructionModal = getEl('close-ppdt-instruction-modal'), startPpdtTestBtn = getEl('start-ppdt-test-btn');
+        const ppdtTestModal = getEl('ppdt-test-modal'), ppdtTestTitle = getEl('ppdt-test-title'), ppdtTimerDisplay = getEl('ppdt-timer'), ppdtRestartBtn = getEl('ppdt-restart-btn'), ppdtBackBtn = getEl('ppdt-back-btn'), ppdtImageContainer = getEl('ppdt-image-container'), ppdtTestImage = getEl('ppdt-test-image'), ppdtDetailsTextarea = getEl('ppdt-details-textarea'), ppdtStoryTextarea = getEl('ppdt-story-textarea');
+        const ppdtAnalyzeBtn = getEl('ppdt-analyze-btn');
+        const ppdtAnalysisModal = getEl('ppdt-analysis-modal'), closePpdtAnalysisModal = getEl('close-ppdt-analysis-modal'), ppdtAnalysisContent = getEl('ppdt-analysis-content');
+
+        const mockTestSelectionModal = getEl('mock-test-selection-modal');
+        const closeMockTestModal = getEl('close-mock-test-modal');
+        const mockTestBackBtn = getEl('mock-test-back-btn');
+        const mockTestTitle = getEl('mock-test-title');
+        const mockTestViews = {
+            exam: getEl('mock-test-view-exam'),
+            cdsSets: getEl('mock-test-view-cds-sets'),
+            cdsSubjects: getEl('mock-test-view-cds-subjects'),
+            englishTopics: getEl('mock-test-view-english-topics'),
+            gkTopics: getEl('mock-test-view-gk-topics'),
+        };
+
+        const quizModal = getEl('quiz-modal'), startQuizBtn = getEl('start-quiz-btn'), quizContent = getEl('quiz-content');
+        const resultModal = getEl('result-modal'), closeResultModal = getEl('close-result-modal'), resultScore = getEl('result-score'), resultText = getEl('result-text'), quizReviewContainer = getEl('quiz-review-container');
+
+        // New SSB Test DOM Elements
+        const ssbLevelSelectionModal = getEl('ssb-level-selection-modal');
+        const ssbLevelBackBtn = getEl('ssb-level-back-btn');
+        const ssbLevelSelectionTitle = getEl('ssb-level-selection-title');
+        const ssbLevelsContainer = getEl('ssb-levels-container');
+        const ssbTestModal = getEl('ssb-test-modal');
+        const ssbQuestionType = getEl('ssb-question-type');
+        const ssbQuestionCounter = getEl('ssb-question-counter');
+        const ssbEndTestBtn = getEl('ssb-end-test-btn');
+        const ssbTimerProgress = getEl('ssb-timer-progress');
+        const ssbTimerText = getEl('ssb-timer-text');
+        const ssbQuestionText = getEl('ssb-question-text');
+        const ssbAnswerInput = getEl('ssb-answer-input');
+        const ssbNextBtn = getEl('ssb-next-btn');
+        const ssbResultsModal = getEl('ssb-results-modal');
+        const ssbAnswersSummary = getEl('ssb-answers-summary');
+        const ssbRestartBtn = getEl('ssb-restart-btn');
+        const ssbAnalyzeAnswersBtn = getEl('ssb-analyze-answers-btn');
+        const ssbAnalysisModal = getEl('ssb-analysis-modal');
+        const closeSsbAnalysisModal = getEl('close-ssb-analysis-modal');
+        const ssbAnalysisContent = getEl('ssb-analysis-content');
+
+
+        // State variables
+        let pieChartInstance, barChartInstance, tradeBarChartInstance, currentQuizQuestion = 0, quizScore = 0, quizTimer, ppdtTimer;
+        let userAnswers = [];
+        let currentPpdtSetId = null;
+        let mockTestState = { currentView: 'exam', selectedExam: null, selectedSet: null, selectedSubject: null, selectedTopic: null };
+        const apiKey = ""; // Leave blank
+
+        // SSB Test State variables
+        let ssbState = {
+            currentModule: null,
+            currentLevel: null,
+            currentQuestions: [],
+            currentQuestionIndex: 0,
+            userAnswers: [],
+            timer: null,
+            timeLeft: 0,
+        };
+        const FULL_DASH_ARRAY = 283;
+
+
+        // --- Gemini API Call Function ---
+        async function callGeminiAPI(prompt, systemPrompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+            };
+            if(systemPrompt){
+                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
+            }
+
+            let response;
+            let retries = 3;
+            let delay = 1000;
+
+            for (let i = 0; i < retries; i++) {
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        return result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+                    } else if (response.status === 429) {
+                        // Too many requests, wait and retry
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2; // Exponential backoff
+                    } else {
+                        // Handle other errors
+                        const errorResult = await response.json();
+                        console.error('API Error:', errorResult);
+                        return `Error: ${errorResult.error?.message || 'Failed to get a response.'}`;
+                    }
+                } catch (error) {
+                    console.error('Network or fetch error:', error);
+                     if (i === retries - 1) return "Error: Could not connect to the API.";
+                     await new Promise(resolve => setTimeout(resolve, delay));
+                     delay *= 2;
+                }
+            }
+             return "Error: Maximum retries reached.";
+        }
+
+
+        const formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+        
+        // --- News Section ---
+        function renderNews(filter = '') {
+            const filteredData = newsData.filter(item => item.title.toLowerCase().includes(filter.toLowerCase()) || item.summary.toLowerCase().includes(filter.toLowerCase()) || item.tags.some(tag => tag.toLowerCase().includes(filter.toLowerCase())));
+            infographicContainer.innerHTML = filteredData.map(item => {
+                let statValue = parseFloat(item.stat), progressWidth = '83%';
+                if (!isNaN(statValue)) {
+                    if (item.stat.includes('%')) progressWidth = item.stat;
+                    else if (item.stat.includes('/')) { const parts = item.stat.split('/'); progressWidth = (parseInt(parts[0]) / parseInt(parts[1])) * 100 + '%'; }
+                }
+                return `<div class="infographic-card news-card flex-shrink-0 w-80 snap-start glass-effect rounded-2xl overflow-hidden flex flex-col"><img src="${item.img}" alt="${item.title}" class="w-full h-48 object-cover"><div class="p-5 flex flex-col flex-grow"><div><p class="text-sm font-semibold text-blue-400 mb-1">${item.category.toUpperCase()}</p><h3 class="text-xl font-bold text-white">${item.title}</h3><p class="text-gray-400 text-sm mb-4 flex-grow">${item.summary}</p></div><div class="mt-auto"><div class="flex justify-between items-center mb-3"><span class="font-bold text-2xl text-white">${item.stat}</span><span class="text-sm text-gray-500">${item.statLabel}</span></div><div class="w-full bg-white/20 rounded-full h-1.5 mb-4"><div class="bg-blue-400 h-1.5 rounded-full" style="width: ${progressWidth}"></div></div><button data-infographic-id="${item.id}" class="explore-btn w-full bg-white/10 text-white font-bold py-2.5 px-5 rounded-full hover:bg-white/20 transition-transform hover:scale-105">Explore</button></div></div></div>`
+            }).join('') || '<p class="text-gray-500">No news found.</p>';
+        }
+        newsSearch.addEventListener('input', (e) => renderNews(e.target.value));
+        
+        // --- Infographic Modals Logic ---
+        function renderTradeChart() {
+            Chart.defaults.color = '#ccc'; Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+            if (tradeBarChartInstance) tradeBarChartInstance.destroy();
+            tradeBarChartInstance = new Chart(getEl('tradeBarChart').getContext('2d'), { 
+                type: 'bar', 
+                data: { 
+                    labels: ['India-Russia', 'India-China'], 
+                    datasets: [
+                        { label: 'Imports ($ Bn)', data: [61, 101], backgroundColor: '#60a5fa' },
+                        { label: 'Exports ($ Bn)', data: [4, 16], backgroundColor: '#93c5fd' }
+                    ] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { 
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { callback: value => `$${value}Bn` } }, 
+                        x: { grid: { display: false } } 
+                    } 
+                } 
+            });
+        }
+       
+        function setupGstModal() {
+            const tabs = gstModal.querySelectorAll('.gst-tab-button'), contents = gstModal.querySelectorAll('.gst-tab-content');
+            tabs.forEach(tab => tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active', 'bg-white', 'text-gray-900'));
+                tab.classList.add('active', 'bg-white', 'text-gray-900');
+                contents.forEach(content => content.classList.add('hidden'));
+                getEl(`gst-content${tab.dataset.tab}`).classList.remove('hidden');
+                if(tab.dataset.tab === '3') renderCharts();
+            }));
+        }
+
+        function renderCharts() {
+            Chart.defaults.color = '#ccc'; Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+            if (pieChartInstance) pieChartInstance.destroy();
+            pieChartInstance = new Chart(getEl('pieChart').getContext('2d'), { type: 'pie', data: { labels: ['Tax-Free', '5%', '18%', '40%'], datasets: [{ data: [15, 40, 40, 5], backgroundColor: ['#10b981', '#3b82f6', '#6366f1', '#ef4444'], hoverOffset: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(getEl('barChart').getContext('2d'), { type: 'bar', data: { labels: ['Electronics', 'Food', 'Sin Goods', 'Insurance'], datasets: [{ label: 'Old Rate', data: [28, 12, 28, 18], backgroundColor: '#60a5fa' }, { label: 'New Rate', data: [18, 5, 40, 0], backgroundColor: '#93c5fd' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 45, grid: { color: 'rgba(255, 255, 255, 0.1)' } }, x: { grid: { display: false } } } } });
+        }
+        
+        infographicContainer.addEventListener('click', e => { 
+            const target = e.target.closest('.explore-btn');
+            if (!target) return;
+            const infographicId = target.dataset.infographicId;
+
+            switch (infographicId) {
+                case "1":
+                    gstModal.classList.replace('hidden', 'flex');
+                    gstModal.querySelector('.gst-tab-button[data-tab="1"]').click();
+                    break;
+                case "2":
+                    tradeModal.classList.replace('hidden', 'flex');
+                    renderTradeChart();
+                    break;
+                case "3":
+                    p75Modal.classList.replace('hidden', 'flex');
+                    break;
+                 case "4":
+                    afghanistanModal.classList.replace('hidden', 'flex');
+                    break;
+            }
+        });
+
+        closeGstModal.addEventListener('click', () => gstModal.classList.replace('flex', 'hidden'));
+        closeTradeModal.addEventListener('click', () => tradeModal.classList.replace('flex', 'hidden'));
+        closeP75Modal.addEventListener('click', () => p75Modal.classList.replace('flex', 'hidden'));
+        closeAfghanistanModal.addEventListener('click', () => afghanistanModal.classList.replace('flex', 'hidden'));
+
+        // --- PYQ Modal ---
+        function showPyqModal(exam = 'nda') {
+            const data = exam === 'nda' ? ndaPapersData : cdsPapersData, color = exam === 'nda' ? 'blue' : 'green';
+            let accordionHTML = '';
+            Object.keys(data).sort((a, b) => b - a).forEach(year => {
+                let paperHTML = data[year].map(paper => `<div class="p-3 bg-black/20 rounded-md"><p class="font-semibold mb-2">${paper.name}</p><div class="flex flex-wrap gap-2">${paper.subjects.map(subject => `<a href="${subject.link}" target="_blank" rel="noopener noreferrer" class="download-btn bg-${color}-500/20 text-${color}-300 text-xs font-bold px-3 py-1.5 rounded-full hover:bg-${color}-500/40 transition">${subject.name}</a>`).join('')}</div></div>`).join('');
+                accordionHTML += `<div class="accordion-item border-b border-white/10"><button class="accordion-header w-full flex justify-between items-center p-4 text-left"><span class="font-bold text-lg">${year}</span><svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content hidden p-4 pt-0"><div class="space-y-3">${paperHTML}</div></div></div>`;
+            });
+            getEl('pyq-accordion-container').innerHTML = accordionHTML;
+        }
+        explorePyqBtn.addEventListener('click', () => { pyqModal.classList.replace('hidden', 'flex'); pyqModal.querySelector('.pyq-tab-button[data-exam="nda"]').click(); });
+        closePyqBtn.addEventListener('click', () => pyqModal.classList.replace('flex', 'hidden'));
+        pyqModal.addEventListener('click', (e) => {
+            if (e.target.matches('.pyq-tab-button')) { pyqModal.querySelectorAll('.pyq-tab-button').forEach(b => b.classList.remove('active', 'bg-white', 'text-gray-900')); e.target.classList.add('active', 'bg-white', 'text-gray-900'); showPyqModal(e.target.dataset.exam); }
+            const header = e.target.closest('.accordion-header');
+            if (header) { header.nextElementSibling.classList.toggle('hidden'); header.querySelector('svg').classList.toggle('rotate-180'); }
+        });
+
+        // --- SSB & PPDT ---
+        ssbPracticeBtn.addEventListener('click', () => ssbModal.classList.replace('hidden', 'flex'));
+        closeSsbBtn.addEventListener('click', () => ssbModal.classList.replace('flex', 'hidden'));
+        
+        ssbModal.addEventListener('click', (e) => {
+            const drillCard = e.target.closest('.ssb-drill-card');
+            if (drillCard) {
+                const drillType = drillCard.dataset.drill;
+                if (drillType === 'ppdt') {
+                    ssbModal.classList.replace('flex', 'hidden');
+                    ppdtSetsModal.classList.replace('hidden', 'flex');
+                } else if (drillType === 'wat' || drillType === 'srt') {
+                    ssbModal.classList.replace('flex', 'hidden');
+                    setupSsbLevelScreen(drillType.toUpperCase());
+                }
+            }
+        });
+
+        function renderPpdtSets() {
+            const container = ppdtSetsModal.querySelector('.grid');
+            container.innerHTML = ppdtSetsData.map(set => `
+                <div class="ppdt-set-card bg-white/5 rounded-2xl cursor-pointer group hover:bg-white/10 transition-all duration-300" data-set-id="${set.id}">
+                    <div class="p-4 text-center flex flex-col justify-center items-center h-32">
+                         <h4 class="font-bold text-white text-lg">PPDT Set ${set.id}</h4>
+                         <p class="text-sm text-gray-400 mt-1">Start Practice</p>
+                    </div>
+                </div>`).join('');
+        }
+
+        ppdtSetsModal.addEventListener('click', (e) => {
+            const setCard = e.target.closest('.ppdt-set-card');
+            if (setCard) {
+                currentPpdtSetId = setCard.dataset.setId;
+                getEl('ppdt-instruction-title').textContent = `PPDT Set ${currentPpdtSetId} - Instructions`;
+                ppdtSetsModal.classList.replace('flex', 'hidden');
+                ppdtInstructionModal.classList.replace('hidden', 'flex');
+            }
+        });
+
+        function startPpdtTest(setId) {
+            clearInterval(ppdtTimer);
+            const setData = ppdtSetsData.find(s => s.id == setId);
+            if (!setData) return;
+            
+            ppdtImageContainer.innerHTML = `<img id="ppdt-test-image" src="" alt="PPDT Picture" class="max-h-full max-w-full rounded-lg transition-opacity duration-500">`;
+            const ppdtTestImage = getEl('ppdt-test-image');
+
+            ppdtTestTitle.textContent = `PPDT Test - Set ${setId}`;
+            ppdtTestImage.src = setData.image;
+            ppdtDetailsTextarea.value = '';
+            ppdtStoryTextarea.value = '';
+            ppdtDetailsTextarea.disabled = false;
+            ppdtStoryTextarea.disabled = false;
+            ppdtAnalyzeBtn.disabled = true;
+            
+            let timeLeft = 270; 
+            ppdtTimerDisplay.textContent = formatTime(timeLeft);
+            
+            ppdtTimer = setInterval(() => {
+                timeLeft--;
+                ppdtTimerDisplay.textContent = formatTime(timeLeft);
+                if (timeLeft === 240) { 
+                    ppdtTestImage.classList.add('opacity-0');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(ppdtTimer);
+                    ppdtTimerDisplay.textContent = "Time's Up!";
+                    ppdtDetailsTextarea.disabled = true;
+                    ppdtStoryTextarea.disabled = true;
+                    ppdtAnalyzeBtn.disabled = false;
+                }
+            }, 1000);
+
+            ppdtInstructionModal.classList.replace('flex', 'hidden');
+            ppdtTestModal.classList.replace('hidden', 'flex');
+        }
+        
+        startPpdtTestBtn.addEventListener('click', () => startPpdtTest(currentPpdtSetId));
+        ppdtRestartBtn.addEventListener('click', () => startPpdtTest(currentPpdtSetId));
+        ppdtBackBtn.addEventListener('click', () => {
+            clearInterval(ppdtTimer);
+            ppdtTestModal.classList.replace('flex', 'hidden');
+            ppdtInstructionModal.classList.replace('hidden', 'flex');
+        });
+        
+        ppdtAnalyzeBtn.addEventListener('click', async () => {
+            const story = ppdtStoryTextarea.value;
+            if (story.trim().length < 20) {
+                ppdtAnalysisContent.innerHTML = `<p class="text-yellow-300">Please write a longer story to get a meaningful analysis.</p>`;
+                ppdtAnalysisModal.classList.replace('hidden', 'flex');
+                return;
+            }
+            ppdtAnalysisContent.innerHTML = `<div class="flex justify-center items-center"><div class="loader"></div></div>`;
+            ppdtAnalysisModal.classList.replace('hidden', 'flex');
+
+            const systemPrompt = "You are an SSB interview assessor. Analyze the following PPDT story written by a candidate. Evaluate it based on Officer Like Qualities (OLQs) such as reasoning ability, organizing ability, power of expression, and social adaptability. Provide a constructive feedback report highlighting positive qualities and areas for improvement. Keep the analysis concise, structured with bullet points, and encouraging.";
+            const analysis = await callGeminiAPI(story, systemPrompt);
+            ppdtAnalysisContent.innerHTML = `<div class="prose prose-invert text-gray-300">${analysis.replace(/\n/g, '<br>')}</div>`;
+        });
+        
+        closePpdtAnalysisModal.addEventListener('click', () => ppdtAnalysisModal.classList.replace('flex', 'hidden'));
+
+        closePpdtSetsModal.addEventListener('click', () => ppdtSetsModal.classList.replace('flex', 'hidden'));
+        closePpdtInstructionModal.addEventListener('click', () => ppdtInstructionModal.classList.replace('flex', 'hidden'));
+
+        // --- Mock Tests & Quiz ---
+        function showMockTestView(viewName) {
+            Object.values(mockTestViews).forEach(view => view.classList.add('hidden'));
+            mockTestViews[viewName].classList.remove('hidden');
+            mockTestState.currentView = viewName;
+
+            mockTestBackBtn.classList.toggle('hidden', viewName === 'exam');
+            switch (viewName) {
+                case 'exam':
+                    mockTestTitle.textContent = 'Select Examination';
+                    break;
+                case 'cdsSets':
+                    mockTestTitle.textContent = 'Select CDS Mock Test';
+                    break;
+                case 'cdsSubjects':
+                    mockTestTitle.textContent = `CDS Mock Test ${mockTestState.selectedSet} - Subjects`;
+                    break;
+                case 'englishTopics':
+                    mockTestTitle.textContent = `English - Select Topic`;
+                    break;
+                case 'gkTopics':
+                    mockTestTitle.textContent = `General Knowledge - Select Topic`;
+                    break;
+            }
+        }
+
+        startQuizBtn.addEventListener('click', () => {
+            showMockTestView('exam');
+            mockTestSelectionModal.classList.replace('hidden', 'flex');
+        });
+
+        mockTestSelectionModal.addEventListener('click', e => {
+            const examSelector = e.target.closest('[data-exam-select]');
+            const setSelector = e.target.closest('[data-mock-set]');
+            const subjectSelector = e.target.closest('[data-subject-select]');
+            const topicSelector = e.target.closest('[data-topic-select]');
+
+            if (examSelector) {
+                const exam = examSelector.dataset.examSelect;
+                if (exam === 'cds') {
+                    mockTestState.selectedExam = 'cds';
+                    showMockTestView('cdsSets');
+                }
+            } else if (setSelector) {
+                mockTestState.selectedSet = setSelector.dataset.mock-set;
+                showMockTestView('cdsSubjects');
+            } else if (subjectSelector) {
+                const subject = subjectSelector.dataset.subjectSelect;
+                mockTestState.selectedSubject = subject;
+                if (subject === 'english') {
+                    showMockTestView('englishTopics');
+                } else if (subject === 'gk') {
+                    showMockTestView('gkTopics');
+                }
+                 else {
+                    mockTestSelectionModal.classList.replace('flex', 'hidden');
+                    startQuiz(subject, []);
+                }
+            } else if (topicSelector) {
+                const topic = topicSelector.dataset.topicSelect;
+                mockTestState.selectedTopic = topic;
+                mockTestSelectionModal.classList.replace('flex', 'hidden');
+                startQuiz(topic, []);
+            }
+        });
+
+        mockTestBackBtn.addEventListener('click', () => {
+             if (mockTestState.currentView === 'englishTopics' || mockTestState.currentView === 'gkTopics') {
+                showMockTestView('cdsSubjects');
+            } else if (mockTestState.currentView === 'cdsSubjects') {
+                showMockTestView('cdsSets');
+            } else if (mockTestState.currentView === 'cdsSets') {
+                showMockTestView('exam');
+            }
+        });
+
+        closeMockTestModal.addEventListener('click', () => {
+            mockTestSelectionModal.classList.replace('flex', 'hidden');
+        });
+
+        function startQuiz(topicOrSubject, answers) { 
+            currentQuizQuestion = 0; 
+            quizScore = 0; 
+            userAnswers = answers;
+            quizModal.classList.replace('hidden', 'flex'); 
+            showQuestion(topicOrSubject); 
+        }
+        
+        function showQuestion(topicOrSubject) {
+            clearInterval(quizTimer); 
+            let timeLeft = 60;
+            const questions = quizData[topicOrSubject];
+            if (!questions) {
+                quizContent.innerHTML = `<p class="text-center">Quiz for this topic is not available yet.</p>`;
+                return;
+            }
+
+            const question = questions[currentQuizQuestion];
+            const topicName = topicOrSubject.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+            const optionsHTML = question.options.map((option, index) => `<label class="flex items-center p-4 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition duration-300"><input type="radio" name="option" value="${index}" class="form-radio h-5 w-5 text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500"><span class="ml-4 text-gray-200">${option}</span></label>`).join('');
+            quizContent.innerHTML = `<h3 class="text-xl font-bold mb-1 text-center">${topicName} Quiz</h3><p class="text-gray-300 text-sm mb-6 text-center">Question ${currentQuizQuestion + 1} of ${questions.length}</p><div class="bg-white/10 p-6 rounded-lg"><p class="text-lg font-semibold mb-6">${question.question}</p><div class="space-y-3">${optionsHTML}</div></div><div class="mt-6 flex justify-between items-center"><span class="text-sm font-semibold" id="quiz-timer">Time: ${timeLeft}</span><button id="next-question-btn" class="bg-white/10 text-white font-bold py-2 px-6 rounded-full hover:bg-white/20 transition-transform hover:scale-105 disabled:opacity-50" disabled>Next</button></div>`;
+            
+            const nextBtn = getEl('next-question-btn');
+            quizContent.querySelector('div').addEventListener('change', () => nextBtn.disabled = false);
+            nextBtn.addEventListener('click', () => nextQuestion(topicOrSubject));
+            quizTimer = setInterval(() => { 
+                timeLeft--; 
+                getEl('quiz-timer').textContent = `Time: ${timeLeft}`; 
+                if (timeLeft <= 0) nextQuestion(topicOrSubject); 
+            }, 1000);
+        }
+        function nextQuestion(topicOrSubject) {
+            clearInterval(quizTimer);
+            const questions = quizData[topicOrSubject];
+            const selected = quizContent.querySelector('input[name="option"]:checked');
+            const answerIndex = selected ? parseInt(selected.value) : -1;
+            userAnswers.push(answerIndex);
+            if (answerIndex === questions[currentQuizQuestion].answer) quizScore++;
+            currentQuizQuestion++;
+            if (currentQuizQuestion < questions.length) showQuestion(topicOrSubject); else showResult(topicOrSubject, questions);
+        }
+        
+        async function showResult(topic, questions) {
+            quizModal.classList.replace('flex', 'hidden');
+            resultModal.classList.replace('hidden', 'flex');
+            resultScore.textContent = `${quizScore}/${questions.length}`;
+            resultText.textContent = `You answered ${quizScore} out of ${questions.length} questions correctly.`;
+            
+            let reviewHTML = '<h3>Review your answers:</h3><div class="space-y-4 mt-4">';
+            questions.forEach((q, i) => {
+                const userAnswerIndex = userAnswers[i];
+                const isCorrect = userAnswerIndex === q.answer;
+                const userChoice = userAnswerIndex !== -1 ? q.options[userAnswerIndex] : 'Not Answered';
+                
+                reviewHTML += `
+                    <div class="p-3 rounded-lg ${isCorrect ? 'bg-green-500/10' : 'bg-red-500/10'}">
+                        <p class="font-semibold">${i + 1}. ${q.question}</p>
+                        <p class="text-sm ${isCorrect ? 'text-green-300' : 'text-red-300'}">Your answer: ${userChoice}</p>
+                        <p class="text-sm text-gray-400">Correct answer: ${q.options[q.answer]}</p>
+                        <button class="explain-answer-btn text-xs text-blue-400 hover:underline" data-question="${q.question}" data-answer="${q.options[q.answer]}">Explain Answer ✨</button>
+                        <div class="explanation-content"></div>
+                    </div>
+                `;
+            });
+            reviewHTML += '</div>';
+            quizReviewContainer.innerHTML = reviewHTML;
+        }
+        
+        quizReviewContainer.addEventListener('click', async (e) => {
+            if(e.target.classList.contains('explain-answer-btn')) {
+                const button = e.target;
+                const question = button.dataset.question;
+                const answer = button.dataset.answer;
+                const explanationDiv = button.nextElementSibling;
+                
+                explanationDiv.innerHTML = `<div class="flex justify-center items-center p-2"><div class="loader !w-5 !h-5"></div></div>`;
+                button.disabled = true;
+
+                const prompt = `Explain why '${answer}' is the correct answer for the question: '${question}'. Keep the explanation concise and easy to understand for a CDS exam aspirant.`;
+                const explanation = await callGeminiAPI(prompt, null);
+                explanationDiv.innerHTML = `<p class="text-sm text-gray-400 mt-2 p-2 bg-black/20 rounded-md">${explanation}</p>`;
+            }
+        });
+
+        closeResultModal.addEventListener('click', () => resultModal.classList.replace('flex', 'hidden'));
+        
+        // --- Universal Setup ---
+        allModals.forEach(modal => { if(modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.replace('flex', 'hidden'); }); });
+        
+        setupGstModal();
+        renderPpdtSets();
+
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 });
+        const observeRenderedCards = () => { document.querySelectorAll('.news-card, .exam-card').forEach(card => { card.classList.add('fade-in'); observer.observe(card); }); };
+        
+        renderNews();
+        observeRenderedCards();
+        newsSearch.addEventListener('input', observeRenderedCards);
+
+
+        // --- SSB Test Logic ---
+        function setupSsbLevelScreen(module) {
+            ssbState.currentModule = module;
+            ssbLevelSelectionTitle.textContent = `Select ${module} Level`;
+            ssbLevelsContainer.innerHTML = '';
+            ssbLevelData[module].forEach(level => {
+                const button = document.createElement('button');
+                button.className = 'level-btn glass-effect rounded-2xl p-4 text-left hover:bg-white/20 transition-all';
+                button.innerHTML = `<h3 class="font-bold text-lg">${level.title} (Level ${level.level})</h3><p class="text-sm text-white/80">${level.q} ${module}s @ ${level.time}s each</p><p class="text-xs text-white/60 mt-1">🎯 ${level.goal}</p>`;
+                button.addEventListener('click', () => startSsbTest(module, level.level));
+                ssbLevelsContainer.appendChild(button);
+            });
+            ssbLevelSelectionModal.classList.replace('hidden', 'flex');
+        }
+
+        function startSsbTest(module, level) {
+            ssbState.currentLevel = level;
+            ssbState.currentQuestions = ssbQuestions[module][level].map(q => ({ text: q, time: ssbLevelData[module].find(l => l.level === level).time }));
+            ssbState.currentQuestionIndex = 0;
+            ssbState.userAnswers = [];
+            ssbLevelSelectionModal.classList.replace('flex', 'hidden');
+            ssbTestModal.classList.replace('hidden', 'flex');
+            displaySsbQuestion();
+        }
+
+        function displaySsbQuestion() {
+            if (ssbState.currentQuestionIndex >= ssbState.currentQuestions.length) return showSsbResults();
+            const question = ssbState.currentQuestions[ssbState.currentQuestionIndex];
+            ssbQuestionType.textContent = ssbState.currentModule;
+            ssbQuestionCounter.textContent = `Question ${ssbState.currentQuestionIndex + 1} / ${ssbState.currentQuestions.length}`;
+            ssbQuestionText.textContent = question.text;
+            ssbAnswerInput.value = '';
+            ssbAnswerInput.focus();
+            startSsbTimer(question.time);
+        }
+        
+        function startSsbTimer(duration) {
+            clearInterval(ssbState.timer);
+            ssbState.timeLeft = duration;
+            ssbTimerText.textContent = ssbState.timeLeft;
+            setCircleDashoffset(1);
+            ssbState.timer = setInterval(() => {
+                ssbState.timeLeft--;
+                ssbTimerText.textContent = ssbState.timeLeft;
+                setCircleDashoffset(ssbState.timeLeft / duration);
+                if (ssbState.timeLeft <= 0) goToNextSsbQuestion();
+            }, 1000);
+        }
+
+        function setCircleDashoffset(fraction) {
+            const offset = Math.max(0, Math.min(1, fraction)) * FULL_DASH_ARRAY;
+            ssbTimerProgress.style.strokeDashoffset = FULL_DASH_ARRAY - offset;
+        }
+
+        function goToNextSsbQuestion() {
+            clearInterval(ssbState.timer);
+            ssbState.userAnswers.push({ question: ssbState.currentQuestions[ssbState.currentQuestionIndex].text, answer: ssbAnswerInput.value.trim() || "No answer" });
+            ssbState.currentQuestionIndex++;
+            displaySsbQuestion();
+        }
+
+        function showSsbResults() {
+            ssbTestModal.classList.replace('flex', 'hidden');
+            ssbResultsModal.classList.replace('hidden', 'flex');
+            ssbAnswersSummary.innerHTML = ssbState.userAnswers.map((item, index) => `<div><p class="font-bold text-white/90">${index + 1}. ${item.question}</p><p class="text-white/70 pl-4">- ${item.answer}</p></div>`).join('');
+        }
+        
+        function endSsbTest() {
+            clearInterval(ssbState.timer);
+            showSsbResults();
+        }
+
+        ssbAnalyzeAnswersBtn.addEventListener('click', async () => {
+            ssbAnalysisContent.innerHTML = `<div class="flex justify-center items-center p-8"><div class="loader"></div></div>`;
+            ssbResultsModal.classList.replace('flex', 'hidden');
+            ssbAnalysisModal.classList.replace('hidden', 'flex');
+
+            let prompt = `Analyze the following SSB test responses. The candidate attempted a ${ssbState.currentModule} test at level ${ssbState.currentLevel}. Provide a brief analysis (maximum 150 words) like a psychologist would, focusing on Officer Like Qualities (OLQs) such as planning, courage, social adaptability, and decision-making. Highlight strengths and areas for improvement. Be direct and non-verbose. Here are the questions and their corresponding answers:\n\n`;
+            ssbState.userAnswers.forEach((item, index) => {
+                prompt += `Question ${index + 1}: ${item.question}\nAnswer: ${item.answer}\n\n`;
+            });
+
+            const systemPrompt = "You are an SSB psychologist. Provide a brief and direct analysis of the candidate's responses, focusing on OLQs. Highlight strengths and provide concise, constructive feedback. Do not be verbose.";
+            const analysis = await callGeminiAPI(prompt, systemPrompt);
+            
+            ssbAnalysisContent.innerHTML = `<div class="prose prose-invert max-w-none text-gray-300 space-y-4">
+                <p><strong>Feedback for your ${ssbState.currentModule} test:</strong></p>
+                <p>${analysis}</p>
+                </div>`;
+        });
+        
+        closeSsbAnalysisModal.addEventListener('click', () => {
+            ssbAnalysisModal.classList.replace('flex', 'hidden');
+            ssbResultsModal.classList.replace('hidden', 'flex');
+        });
+        // SSB Event Listeners
+        ssbLevelBackBtn.addEventListener('click', () => { ssbLevelSelectionModal.classList.replace('flex', 'hidden'); ssbModal.classList.replace('hidden', 'flex'); });
+        ssbNextBtn.addEventListener('click', goToNextSsbQuestion);
+        ssbAnswerInput.addEventListener('keydown', e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), goToNextSsbQuestion()));
+        ssbEndTestBtn.addEventListener('click', endSsbTest);
+        ssbRestartBtn.addEventListener('click', () => { ssbResultsModal.classList.replace('flex', 'hidden'); ssbModal.classList.replace('hidden', 'flex'); });
+    });
+    </script>
+</body>
+</html>
